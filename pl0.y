@@ -113,7 +113,9 @@ extern void setProgAST(block_t t);
 
 %%
  /* Write your grammar rules below and before the next %% */
-
+ 
+block: constDecls varDecls procDecls stmt {$$ = create_block($1, $2, $3, $4);}
+program: block {$$ = $1;}
 
 %%
 
