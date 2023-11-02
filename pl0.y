@@ -114,8 +114,57 @@ extern void setProgAST(block_t t);
 %%
  /* Write your grammar rules below and before the next %% */
 
+program : block ;
+
+block : const_decls var_decls proc_decls stmt ".end"
+          { parseProgram(
+                       ast_block($1,
+                                   $2,
+				   $3, $4
+                                  )
+                       );
+          }
+          ;
+
+constDef : "const" identsym "=" numbersym { $$ = const_def($2,$4); };
+const_decls : { const_decl } ;
+const_decl : const_defs ;
+const_defs : const_def | const_defs "," const_def ;
+
+var_decl : idents ;
+var_decls : { var_decl } ;
+idents : ident | idents , ident ;
+
+proc_decls : { proc_decl } ;
+proc_decl : ident ; block ;
+
+stmt : assign_stmt | call_stmt | begin_stmt | if_stmt | while_stmt | read_stmt | write_stmt | skip_stmt ;
+assign_stmt : ident : expr
+call_stmt : call ident ;
+begin-stmt : begin stmt end ;
+if_stmt : if condition then stmt else stmt ;
+while_stmt : while condition do stmt ; 
+read_stmt : read ident
+write_stmt : write expr
+skip_stmt : skip_stmt
+stmts : stmt | stmts ; stmt ;
+
+condition : odd_condition | rel_op_condition ;
+odd_condition : odd expr ;
+rel_op_condition : expr relOp expr ;
+relOp : + | <> | < | <= | > | >= ;
+
+expr : term | expr plussym term | expr minussym term ;
+term : factor | term multsym factor | term divsym factor ;
+factor : ident | minussym number | posSign number | ( expr ) ;
+posSign : plussym | empty ;
+empty
+
+
+
+label : identsym ;
 
 %%
 
 // Set the program's ast to be ast
-void setProgAST(block_t ast) { progast = ast; }
+void parseProgram(block_t ast) { progast = ast; }
