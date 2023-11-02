@@ -24,7 +24,7 @@ extern void yyerror(const char *filename, const char *msg);
 
  /* the following passes file_name to yyerror,
     and declares it as an formal parameter of yyparse. */
-%parse-param { char const *file_name }
+%parse-param {char const *file_name}
 
 %token <ident> identsym
 %token <number> numbersym
@@ -78,14 +78,14 @@ extern void yyerror(const char *filename, const char *msg);
 
 %type <proc_decl> procDecl
 %type <stmt> stmt
-%type <assign_stmt> assignStmt
-%type <call_stmt> callStmt
-%type <begin_stmt> beginStmt
-%type <if_stmt> ifStmt
-%type <while_stmt> whileStmt
-%type <read_stmt> readStmt
-%type <write_stmt> writeStmt
-%type <skip_stmt> skipStmt
+%type <assign_stmt_t> assignStmt
+%type <call_stmt_t> callStmt
+%type <begin_stmt_t> beginStmt
+%type <if_stmt_t> ifStmt
+%type <while_stmt_t> whileStmt
+%type <read_stmt_t> readStmt
+%type <write_stmt_t> writeStmt
+%type <skip_stmt_t> skipStmt
 %type <stmts> stmts
 %type <condition> condition
 %type <odd_condition> oddCondition
@@ -113,11 +113,71 @@ extern void setProgAST(block_t t);
 
 %%
  /* Write your grammar rules below and before the next %% */
- 
-block: constDecls varDecls procDecls stmt {$$ = create_block($1, $2, $3, $4);}
-program: block {$$ = $1;}
+
+program: block {setProgAST($1);}
+
+block: constDecls varDecls procDecls stmt {$$ = block_t($1, $2, $3, $4);};
+
+constDecls: constDecl {$$ = const_decls_t($1);};
+
+constDecl: constsym constDefs {$$ = const_decl_t($2);};
+
+constDefs: constDef {$$ = const_defs_t($1);}
+| constDefs commasym constDef {$$ = const_defs_t($1, $3);};
+
+constDef: identsym eqsym numbersym {$$ = const_def_t($1, $3);};
+
+varDecls: varDecl {$$ = var_decls_t($1);};
+
+varDecl: varsym idents {$$ = var_decl_t($2);};
+
+idents: identsym {$$ = idents_t($1);};
+
+procDecls: procDecl {$$ = proc_decls_t($1);};
+
+procDecl: proceduresym identsym block {$$ = proc_decl_t($1, $2, $3);};
+
+stmt: assignStmt {$$ = stmt_t($1);}
+| callStmt {$$ = stmt_t($1);}
+| beginStmt {$$ = stmt_t($1);}
+| ifStmt {$$ = stmt_t($1);}
+| whileStmt {$$ = stmt_t($1);}
+| readStmt {$$ = stmt_t($1);}
+| writeStmt {$$ = stmt_t($1);}
+| skipStmt {$$ = stmt_t($1)};
+
+assignStmt: identsym becomessym expr {$$ = assign_stmt_t($1, $3);};
+stmts: stmt {$$ = stmts_t($1);};
+callStmt: callsym identsym {$$ = call_stmt_t($2);};
+beginStmt: beginsym stmts endsym {$$ = begin_stmt_t($2);};
+ifStmt: ifsym condition thensym stmt elsesym stmt endsym {$$ = if_stmt_t($2, $4, $6);};
+whileStmt: whilesym condition dosym stmt endsym {$$ = while_stmt_t($2, $4);};
+readStmt: readsym identsym {$$ = read_stmt_t($2);};
+writeStmt: writesym expr {$$ = write_stmt_t($2);};
+skipStmt: skipsym {$$ = skip_stmt_t();};
+
+condition: oddCondition {$$ = condition_t($1);} 
+| expr relOp expr {$$ = condition_t($1, $3, $1);};
+
+oddCondition: oddsym expr {$$ = odd_condition_t($1);};
+
+expr: expr relOpCondition expr {$$ = expr_t($1, $2, $1);}
+| identsym {$$ = expr_t($1);}
+| numbersym {$$ = expr_t($1);};
+
+relOpCondition: plussym {$$ = binary_op_expr_t($1);}
+| minussym {$$ = binary_op_expr_t($1);}
+| multsym {$$ = binary_op_expr_t($1);}
+| divsym {$$ = binary_op_expr_t($1);};
+
+empty: empty
+
+relOp:
+term:
+factor: 
+posSign:
 
 %%
 
 // Set the program's ast to be ast
-void setProgAST(block_t ast) { progast = ast; }
+void setProgAST(block_t ast) {progast = ast;}
