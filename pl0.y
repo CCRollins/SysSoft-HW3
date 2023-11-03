@@ -118,7 +118,7 @@ program: block {setProgAST(ast_program($1));};
 
 block: constDecls varDecls procDecls stmt {$$ = ast_block($1, $2, $3, $4);};
 
-constDecls: %empty {$$ = ast_empty();} | constDecl {$$ = ast_const_decls($1);};
+constDecls: empty {$$ = ast_const_decls_empty();} | constDecl {$$ = ast_const_decls($1);};
 
 constDecl: constsym constDefs {$$ = ast_const_decl($2);};
 
@@ -127,13 +127,13 @@ constDefs: constDef {$$ = ast_const_defs($1);}
 
 constDef: identsym eqsym numbersym {$$ = ast_const_def($1, $3);};
 
-varDecls: %empty {$$ = ast_empty();} | varDecl {$$ = ast_var_decls($1);};
+varDecls: empty {$$ = ast_var_decls_empty();} | varDecl {$$ = ast_var_decls($1);};
 
 varDecl: varsym idents {$$ = ast_var_decl($2);};
 
 idents: identsym {$$ = ast_idents($1);};
 
-procDecls: %empty {$$ = ast_empty();} | procDecl {$$ = ast_proc_decls($1);};
+procDecls: empty {$$ = ast_proc_decls_empty();} | procDecl {$$ = ast_proc_decls($1);};
 
 procDecl: proceduresym identsym block {$$ = ast_proc_decl($1, $2, $3);};
 
@@ -147,7 +147,6 @@ stmt: assignStmt {$$ = ast_stmt($1);}
 | skipStmt {$$ = ast_stmt($1)};
 
 assignStmt: identsym becomessym expr {$$ = ast_assign_stmt($1, $3);};
-stmts: stmt {$$ = ast_stmts($1);};
 callStmt: callsym identsym {$$ = ast_call_stmt($2);};
 beginStmt: beginsym stmts endsym {$$ = ast_begin_stmt($2);};
 ifStmt: ifsym condition thensym stmt elsesym stmt endsym {$$ = ast_if_stmt($2, $4, $6);};
@@ -155,6 +154,8 @@ whileStmt: whilesym condition dosym stmt endsym {$$ = ast_while_stmt($2, $4);};
 readStmt: readsym identsym {$$ = ast_read_stmt($2);};
 writeStmt: writesym expr {$$ = ast_write_stmt($2);};
 skipStmt: skipsym {$$ = ast_skip_stmt();};
+
+stmts: stmt {$$ = ast_stmts($1);};
 
 condition: oddCondition {$$ = ast_condition($1);} 
 | relOpCondition { $$ = ast_condition_rel($1); } ;
@@ -167,12 +168,9 @@ expr: expr relOpCondition expr {$$ = ast_expr($1, $2, $1);}
 
 relOpCondition: expr relOp expr { $$ =  ast_rel_op_condition($1, $2, $1); } ;
 
-relOp: eqsym | neqsym | ltsym | leqsym | gtsym | geqsym ;
+relOp: eqsym | neqsym | ltsym | leqsym | gtsym | geqsym;
 
-empty: %empty
-    { file_location *floc
-	= file_location_make(lexer_filename(), lexer_line());
-	$$ = ast_empty(floc); } ;
+empty: %empty {$$ = ast_empty();}
 
 expr: term {$$ = ast_expr_number($1);}
 | expr plussym term { $$ = ast_binary_op_expr($1, $2, $3); }
