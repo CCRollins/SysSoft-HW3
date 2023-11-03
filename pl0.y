@@ -114,68 +114,67 @@ extern void setProgAST(block_t t);
 %%
  /* Write your grammar rules below and before the next %% */
 
-program: block {setProgAST($1);}
+program : block {setProgAST(ast_program($1));};
 
-block: constDecls varDecls procDecls stmt {$$ = block_t($1, $2, $3, $4);};
+block: constDecls varDecls procDecls stmt {$$ = ast_block($1, $2, $3, $4);};
 
-constDecls: constDecl {$$ = const_decls_t($1);};
+constDecls: constDecl {$$ = ast_const_decls($1);};
 
-constDecl: constsym constDefs {$$ = const_decl_t($2);};
+constDecl: constsym constDefs {$$ = ast_const_decl($2);};
 
-constDefs: constDef {$$ = const_defs_t($1);}
-| constDefs commasym constDef {$$ = const_defs_t($1, $3);};
+constDefs: constDef {$$ = ast_const_defs($1);}
+| constDefs commasym constDef {$$ = ast_const_defs($1, $3);};
 
-constDef: identsym eqsym numbersym {$$ = const_def_t($1, $3);};
+constDef: identsym eqsym numbersym {$$ = ast_const_def($1, $3);};
 
-varDecls: varDecl {$$ = var_decls_t($1);};
+varDecls: varDecl {$$ = ast_var_decls($1);};
 
-varDecl: varsym idents {$$ = var_decl_t($2);};
+varDecl: varsym idents {$$ = ast_var_decl($2);};
 
-idents: identsym {$$ = idents_t($1);};
+idents: identsym {$$ = ast_idents($1);};
 
-procDecls: procDecl {$$ = proc_decls_t($1);};
+procDecls: procDecl {$$ = ast_proc_decls($1);};
 
-procDecl: proceduresym identsym block {$$ = proc_decl_t($1, $2, $3);};
+procDecl: proceduresym identsym block {$$ = ast_proc_decl($1, $2, $3);};
 
-stmt: assignStmt {$$ = stmt_t($1);}
-| callStmt {$$ = stmt_t($1);}
-| beginStmt {$$ = stmt_t($1);}
-| ifStmt {$$ = stmt_t($1);}
-| whileStmt {$$ = stmt_t($1);}
-| readStmt {$$ = stmt_t($1);}
-| writeStmt {$$ = stmt_t($1);}
-| skipStmt {$$ = stmt_t($1)};
+stmt: assignStmt {$$ = ast_stmt($1);}
+| callStmt {$$ = ast_stmt($1);}
+| beginStmt {$$ = ast_stmt($1);}
+| ifStmt {$$ = ast_stmt($1);}
+| whileStmt {$$ = ast_stmt($1);}
+| readStmt {$$ = ast_stmt($1);}
+| writeStmt {$$ = ast_stmt($1);}
+| skipStmt {$$ = ast_stmt($1)};
 
-assignStmt: identsym becomessym expr {$$ = assign_stmt_t($1, $3);};
-stmts: stmt {$$ = stmts_t($1);};
-callStmt: callsym identsym {$$ = call_stmt_t($2);};
-beginStmt: beginsym stmts endsym {$$ = begin_stmt_t($2);};
-ifStmt: ifsym condition thensym stmt elsesym stmt endsym {$$ = if_stmt_t($2, $4, $6);};
-whileStmt: whilesym condition dosym stmt endsym {$$ = while_stmt_t($2, $4);};
-readStmt: readsym identsym {$$ = read_stmt_t($2);};
-writeStmt: writesym expr {$$ = write_stmt_t($2);};
-skipStmt: skipsym {$$ = skip_stmt_t();};
+assignStmt: identsym becomessym expr {$$ = ast_assign_stmt($1, $3);};
+stmts: stmt {$$ = ast_stmts($1);};
+callStmt: callsym identsym {$$ = ast_call_stmt($2);};
+beginStmt: beginsym stmts endsym {$$ = ast_begin_stmt($2);};
+ifStmt: ifsym condition thensym stmt elsesym stmt endsym {$$ = ast_if_stmt($2, $4, $6);};
+whileStmt: whilesym condition dosym stmt endsym {$$ = ast_while_stmt($2, $4);};
+readStmt: readsym identsym {$$ = ast_read_stmt($2);};
+writeStmt: writesym expr {$$ = ast_write_stmt($2);};
+skipStmt: skipsym {$$ = ast_skip_stmt();};
 
-condition: oddCondition {$$ = condition_t($1);} 
-| expr relOp expr {$$ = condition_t($1, $3, $1);};
+condition: oddCondition {$$ = ast_condition($1);} 
+| expr relOp expr {$$ = ast_condition($1, $3, $1);};
 
-oddCondition: oddsym expr {$$ = odd_condition_t($1);};
+oddCondition: oddsym expr {$$ = ast_odd_condition($1);};
 
-expr: expr relOpCondition expr {$$ = expr_t($1, $2, $1);}
-| identsym {$$ = expr_t($1);}
-| numbersym {$$ = expr_t($1);};
+expr: expr relOpCondition expr {$$ = ast_expr($1, $2, $1);}
+| identsym {$$ = ast_expr($1);}
+| numbersym {$$ = ast_expr($1);};
 
-relOpCondition: plussym {$$ = binary_op_expr_t($1);}
-| minussym {$$ = binary_op_expr_t($1);}
-| multsym {$$ = binary_op_expr_t($1);}
-| divsym {$$ = binary_op_expr_t($1);};
+relOpCondition: plussym {$$ = ast_binary_op_expr($1);}
+| minussym {$$ = ast_binary_op_expr($1);}
+| multsym {$$ = ast_binary_op_expr($1);}
+| divsym {$$ = ast_binary_op_expr($1);};
 
 empty: empty
-
-relOp:
-term:
-factor: 
-posSign:
+relOp: relOp
+term: term
+factor: factor
+posSign: posSign
 
 %%
 
