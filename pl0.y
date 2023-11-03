@@ -118,7 +118,7 @@ program: block {setProgAST(ast_program($1));};
 
 block: constDecls varDecls procDecls stmt {$$ = ast_block($1, $2, $3, $4);};
 
-constDecls: constDecl {$$ = ast_const_decls($1);};
+constDecls: %empty {$$ = ast_empty();} | constDecl {$$ = ast_const_decls($1);};
 
 constDecl: constsym constDefs {$$ = ast_const_decl($2);};
 
@@ -127,13 +127,13 @@ constDefs: constDef {$$ = ast_const_defs($1);}
 
 constDef: identsym eqsym numbersym {$$ = ast_const_def($1, $3);};
 
-varDecls: varDecl {$$ = ast_var_decls($1);};
+varDecls: %empty {$$ = ast_empty();} | varDecl {$$ = ast_var_decls($1);};
 
 varDecl: varsym idents {$$ = ast_var_decl($2);};
 
 idents: identsym {$$ = ast_idents($1);};
 
-procDecls: procDecl {$$ = ast_proc_decls($1);};
+procDecls: %empty {$$ = ast_empty();} | procDecl {$$ = ast_proc_decls($1);};
 
 procDecl: proceduresym identsym block {$$ = ast_proc_decl($1, $2, $3);};
 
