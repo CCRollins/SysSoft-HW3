@@ -114,7 +114,7 @@ extern void setProgAST(block_t t);
 %%
  /* Write your grammar rules below and before the next %% */
 
-program : block {setProgAST(ast_program($1));};
+program: block {setProgAST(ast_program($1));};
 
 block: constDecls varDecls procDecls stmt {$$ = ast_block($1, $2, $3, $4);};
 
@@ -157,7 +157,7 @@ writeStmt: writesym expr {$$ = ast_write_stmt($2);};
 skipStmt: skipsym {$$ = ast_skip_stmt();};
 
 condition: oddCondition {$$ = ast_condition($1);} 
-| expr relOp expr {$$ = ast_condition($1, $3, $1);};
+| relOpCondition { $$ = ast_condition_rel($1); } ;
 
 oddCondition: oddsym expr {$$ = ast_odd_condition($1);};
 
@@ -165,16 +165,29 @@ expr: expr relOpCondition expr {$$ = ast_expr($1, $2, $1);}
 | identsym {$$ = ast_expr($1);}
 | numbersym {$$ = ast_expr($1);};
 
-relOpCondition: plussym {$$ = ast_binary_op_expr($1);}
-| minussym {$$ = ast_binary_op_expr($1);}
-| multsym {$$ = ast_binary_op_expr($1);}
-| divsym {$$ = ast_binary_op_expr($1);};
+relOpCondition: expr relOp expr { $$ =  ast_rel_op_condition($1, $2, $1); } ;
 
-empty: empty
-relOp: relOp
-term: term
-factor: factor
-posSign: posSign
+relOp: eqsym | neqsym | ltsym | leqsym | gtsym | geqsym ;
+
+empty: %empty
+    { file_location *floc
+	= file_location_make(lexer_filename(), lexer_line());
+	$$ = ast_empty(floc); } ;
+
+expr: term {$$ = ast_expr_number($1);}
+| expr plussym term { $$ = ast_binary_op_expr($1, $2, $3); }
+| expr minussym term {$$ = ast_binary_op_expr($1, $2, $3);};
+
+term: factor
+| term multsym factor {$$ = ast_binary_op_expr($1, $2, $3);}
+| term divsym factor {$$ = ast_binary_op_expr($1, $2, $3); };
+
+factor: identsym { $$ = ast_expr_ident($1); }
+| minussym numbersym {$$ = ast_expr_negated_number($1, $2);}
+| posSign numbersym {$$ = ast_expr_pos_number($1, $2);}
+| expr;
+
+posSign: plussym;
 
 %%
 
