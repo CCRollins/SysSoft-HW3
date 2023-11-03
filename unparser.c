@@ -1,4 +1,4 @@
-/* $Id: unparser.c,v 1.14 2023/10/20 02:00:27 leavens Exp leavens $ */
+/* $Id: unparser.c,v 1.15 2023/11/02 20:33:29 leavens Exp leavens $ */
 #include <stdio.h>
 #include <assert.h>
 #include "unparser.h"
@@ -386,7 +386,7 @@ void unparseBinOpExpr(FILE *out, binary_op_expr_t exp)
     fprintf(out, ")");
 }
 
-// Unparse the given identifer reference (i.e., identifier use), id, to out
+// Unparse the given identifier reference (i.e., identifier use), id, to out
 void unparseIdent(FILE *out, ident_t id)
 {
     fprintf(out, "%s", id.name);
