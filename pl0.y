@@ -114,7 +114,7 @@ extern void setProgAST(block_t t);
 %%
  /* Write your grammar rules below and before the next %% */
 
-program : block {setProgAST($1);};
+program : block periodsym { block_t prog = ast_block($1); setProgAST(prog);} ;
 
 block : constDecls varDecls procDecls stmt {$$ = ast_block($1, $2, $3, $4); } ;
 
@@ -123,16 +123,17 @@ empty : %empty
 	= file_location_make(lexer_filename(), lexer_line());
 	$$ = ast_empty(floc); } ;
 
+constDecls : constDecls constDecl {$$ = ast_const_decls($1, $2); } ;
 constDef : constsym identsym becomessym numbersym { $$ = ast_const_def($2,$4); };
-constDecls : constDecl {$$ = ast_const_decls($1, $1); } ;
+
 constDecl : constsym { $$ = ast_const_decl($1); } ;
 constDefs : constDef { $$ = ast_const_defs_singleton($1);} | constDefs commasym constDef {$$ = ast_const_defs($1, $3);};
 
+varDecls : varDecls varDecl { $$ = ast_var_decls($1, $2); } ;
 varDecl : varsym idents { $$ = ast_var_decl($2); } ;
-varDecls : varDecl { $$ = ast_var_decls($1, $1); } ;
 idents : identsym { $$ = ast_idents_singleton($1); } | idents commasym identsym {$$ = ast_idents($1, $2); };
 
-procDecls : procDecl { $$ = ast_proc_decls($1, $1); } ;
+procDecls : procDecls procDecl { $$ = ast_proc_decls($1, $2); } ;
 procDecl : proceduresym identsym semisym block { $$ = ast_proc_decl($1, $2); } ;
 
 
