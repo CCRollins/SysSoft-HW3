@@ -170,20 +170,10 @@ relOpCondition: expr relOp expr { $$ =  ast_rel_op_condition($1, $2, $1); } ;
 
 relOp: eqsym | neqsym | ltsym | leqsym | gtsym | geqsym;
 
-empty: %empty {$$ = ast_empty();}
-
-expr: term {$$ = ast_expr_number($1);}
-| expr plussym term { $$ = ast_binary_op_expr($1, $2, $3); }
-| expr minussym term {$$ = ast_binary_op_expr($1, $2, $3);};
-
-term: factor
-| term multsym factor {$$ = ast_binary_op_expr($1, $2, $3);}
-| term divsym factor {$$ = ast_binary_op_expr($1, $2, $3); };
-
-factor: identsym { $$ = ast_expr_ident($1); }
-| minussym numbersym {$$ = ast_expr_negated_number($1, $2);}
-| posSign numbersym {$$ = ast_expr_pos_number($1, $2);}
-| expr;
+empty: %empty
+{ file_location *floc
+= file_location_make(lexer_filename(), lexer_line());
+$$ = ast_empty(floc);};
 
 posSign: plussym;
 

@@ -1,37 +1,31 @@
+Nonterminals useless in grammar
+
+    term
+    factor
+    posSign
+
+
 Terminals unused in grammar
 
+    "+"
+    "-"
+    "*"
+    "/"
     "."
     ";"
     "("
     ")"
 
 
-Rules useless in parser due to conflicts
+Rules useless in grammar
 
-   48 expr: expr "+" term
-   49     | expr "-" term
-
-   51 term: term "*" factor
-   52     | term "/" factor
-
-   53 factor: identsym
+   47 posSign: "+"
 
 
-State 48 conflicts: 24 reduce/reduce
-State 55 conflicts: 10 shift/reduce
-State 57 conflicts: 2 shift/reduce
-State 62 conflicts: 4 shift/reduce, 11 reduce/reduce
-State 63 conflicts: 4 shift/reduce, 11 reduce/reduce
-State 66 conflicts: 4 shift/reduce, 2 reduce/reduce
-State 68 conflicts: 1 shift/reduce
-State 83 conflicts: 4 shift/reduce
-State 84 conflicts: 2 shift/reduce, 24 reduce/reduce
-State 85 conflicts: 12 reduce/reduce
-State 86 conflicts: 2 shift/reduce, 24 reduce/reduce
-State 87 conflicts: 4 shift/reduce, 24 reduce/reduce
-State 88 conflicts: 4 shift/reduce, 6 reduce/reduce
-State 89 conflicts: 24 reduce/reduce
-State 90 conflicts: 24 reduce/reduce
+State 57 conflicts: 1 shift/reduce
+State 58 conflicts: 1 shift/reduce
+State 72 conflicts: 2 shift/reduce
+State 73 conflicts: 2 shift/reduce
 
 
 Grammar
@@ -109,34 +103,19 @@ Grammar
    44      | ">"
    45      | ">="
 
-   46 empty: %empty
-
-   47 expr: term
-   48     | expr "+" term
-   49     | expr "-" term
-
-   50 term: factor
-   51     | term "*" factor
-   52     | term "/" factor
-
-   53 factor: identsym
-   54       | "-" numbersym
-   55       | posSign numbersym
-   56       | expr
-
-   57 posSign: "+"
+   46 empty: ε
 
 
 Terminals, with rules where they appear
 
     $end (0) 0
     error (256)
-    identsym <ident> (258) 8 12 15 24 25 29 37 53
-    numbersym <number> (259) 8 38 54 55
-    "+" <token> (260) 48 57
-    "-" <token> (261) 49 54
-    "*" <token> (262) 51
-    "/" <token> (263) 52
+    identsym <ident> (258) 8 12 15 24 25 29 37
+    numbersym <number> (259) 8 38
+    "+" <token> (260)
+    "-" <token> (261)
+    "*" <token> (262)
+    "/" <token> (263)
     "." <token> (264)
     ";" <token> (265)
     "=" <token> (266) 8 40
@@ -240,8 +219,8 @@ Nonterminals, with rules where they appear
         on left: 35
         on right: 33
     expr <expr> (60)
-        on left: 36 37 38 47 48 49
-        on right: 24 30 35 36 39 48 49 56
+        on left: 36 37 38
+        on right: 24 30 35 36 39
     relOpCondition <rel_op_condition> (61)
         on left: 39
         on right: 34 36
@@ -251,20 +230,11 @@ Nonterminals, with rules where they appear
     empty <empty> (63)
         on left: 46
         on right: 3 9 13
-    term <expr> (64)
-        on left: 50 51 52
-        on right: 47 48 49 51 52
-    factor <expr> (65)
-        on left: 53 54 55 56
-        on right: 50 51 52
-    posSign <token> (66)
-        on left: 57
-        on right: 55
 
 
 State 0
 
-    0 $accept: . program $end
+    0 $accept: • program $end
 
     "const"  shift, and go to state 1
 
@@ -279,7 +249,7 @@ State 0
 
 State 1
 
-    5 constDecl: "const" . constDefs
+    5 constDecl: "const" • constDefs
 
     identsym  shift, and go to state 7
 
@@ -289,21 +259,21 @@ State 1
 
 State 2
 
-    0 $accept: program . $end
+    0 $accept: program • $end
 
     $end  shift, and go to state 10
 
 
 State 3
 
-    1 program: block .
+    1 program: block •
 
     $default  reduce using rule 1 (program)
 
 
 State 4
 
-    2 block: constDecls . varDecls procDecls stmt
+    2 block: constDecls • varDecls procDecls stmt
 
     "var"  shift, and go to state 11
 
@@ -316,29 +286,29 @@ State 4
 
 State 5
 
-    4 constDecls: constDecl .
+    4 constDecls: constDecl •
 
     $default  reduce using rule 4 (constDecls)
 
 
 State 6
 
-    3 constDecls: empty .
+    3 constDecls: empty •
 
     $default  reduce using rule 3 (constDecls)
 
 
 State 7
 
-    8 constDef: identsym . "=" numbersym
+    8 constDef: identsym • "=" numbersym
 
     "="  shift, and go to state 15
 
 
 State 8
 
-    5 constDecl: "const" constDefs .
-    7 constDefs: constDefs . "," constDef
+    5 constDecl: "const" constDefs •
+    7 constDefs: constDefs • "," constDef
 
     ","  shift, and go to state 16
 
@@ -347,21 +317,21 @@ State 8
 
 State 9
 
-    6 constDefs: constDef .
+    6 constDefs: constDef •
 
     $default  reduce using rule 6 (constDefs)
 
 
 State 10
 
-    0 $accept: program $end .
+    0 $accept: program $end •
 
     $default  accept
 
 
 State 11
 
-   11 varDecl: "var" . idents
+   11 varDecl: "var" • idents
 
     identsym  shift, and go to state 17
 
@@ -370,7 +340,7 @@ State 11
 
 State 12
 
-    2 block: constDecls varDecls . procDecls stmt
+    2 block: constDecls varDecls • procDecls stmt
 
     "procedure"  shift, and go to state 19
 
@@ -383,28 +353,28 @@ State 12
 
 State 13
 
-   10 varDecls: varDecl .
+   10 varDecls: varDecl •
 
     $default  reduce using rule 10 (varDecls)
 
 
 State 14
 
-    9 varDecls: empty .
+    9 varDecls: empty •
 
     $default  reduce using rule 9 (varDecls)
 
 
 State 15
 
-    8 constDef: identsym "=" . numbersym
+    8 constDef: identsym "=" • numbersym
 
     numbersym  shift, and go to state 23
 
 
 State 16
 
-    7 constDefs: constDefs "," . constDef
+    7 constDefs: constDefs "," • constDef
 
     identsym  shift, and go to state 7
 
@@ -413,28 +383,28 @@ State 16
 
 State 17
 
-   12 idents: identsym .
+   12 idents: identsym •
 
     $default  reduce using rule 12 (idents)
 
 
 State 18
 
-   11 varDecl: "var" idents .
+   11 varDecl: "var" idents •
 
     $default  reduce using rule 11 (varDecl)
 
 
 State 19
 
-   15 procDecl: "procedure" . identsym block
+   15 procDecl: "procedure" • identsym block
 
     identsym  shift, and go to state 25
 
 
 State 20
 
-    2 block: constDecls varDecls procDecls . stmt
+    2 block: constDecls varDecls procDecls • stmt
 
     identsym  shift, and go to state 26
     "call"    shift, and go to state 27
@@ -458,35 +428,35 @@ State 20
 
 State 21
 
-   14 procDecls: procDecl .
+   14 procDecls: procDecl •
 
     $default  reduce using rule 14 (procDecls)
 
 
 State 22
 
-   13 procDecls: empty .
+   13 procDecls: empty •
 
     $default  reduce using rule 13 (procDecls)
 
 
 State 23
 
-    8 constDef: identsym "=" numbersym .
+    8 constDef: identsym "=" numbersym •
 
     $default  reduce using rule 8 (constDef)
 
 
 State 24
 
-    7 constDefs: constDefs "," constDef .
+    7 constDefs: constDefs "," constDef •
 
     $default  reduce using rule 7 (constDefs)
 
 
 State 25
 
-   15 procDecl: "procedure" identsym . block
+   15 procDecl: "procedure" identsym • block
 
     "const"  shift, and go to state 1
 
@@ -500,21 +470,21 @@ State 25
 
 State 26
 
-   24 assignStmt: identsym . ":=" expr
+   24 assignStmt: identsym • ":=" expr
 
     ":="  shift, and go to state 44
 
 
 State 27
 
-   25 callStmt: "call" . identsym
+   25 callStmt: "call" • identsym
 
     identsym  shift, and go to state 45
 
 
 State 28
 
-   26 beginStmt: "begin" . stmts "end"
+   26 beginStmt: "begin" • stmts "end"
 
     identsym  shift, and go to state 26
     "call"    shift, and go to state 27
@@ -539,518 +509,289 @@ State 28
 
 State 29
 
-   27 ifStmt: "if" . condition "then" stmt "else" stmt "end"
+   27 ifStmt: "if" • condition "then" stmt "else" stmt "end"
 
     identsym   shift, and go to state 48
     numbersym  shift, and go to state 49
-    "+"        shift, and go to state 50
-    "-"        shift, and go to state 51
-    "odd"      shift, and go to state 52
+    "odd"      shift, and go to state 50
 
-    condition       go to state 53
-    oddCondition    go to state 54
-    expr            go to state 55
-    relOpCondition  go to state 56
-    term            go to state 57
-    factor          go to state 58
-    posSign         go to state 59
+    condition       go to state 51
+    oddCondition    go to state 52
+    expr            go to state 53
+    relOpCondition  go to state 54
 
 
 State 30
 
-   28 whileStmt: "while" . condition "do" stmt "end"
+   28 whileStmt: "while" • condition "do" stmt "end"
 
     identsym   shift, and go to state 48
     numbersym  shift, and go to state 49
-    "+"        shift, and go to state 50
-    "-"        shift, and go to state 51
-    "odd"      shift, and go to state 52
+    "odd"      shift, and go to state 50
 
-    condition       go to state 60
-    oddCondition    go to state 54
-    expr            go to state 55
-    relOpCondition  go to state 56
-    term            go to state 57
-    factor          go to state 58
-    posSign         go to state 59
+    condition       go to state 55
+    oddCondition    go to state 52
+    expr            go to state 53
+    relOpCondition  go to state 54
 
 
 State 31
 
-   29 readStmt: "read" . identsym
+   29 readStmt: "read" • identsym
 
-    identsym  shift, and go to state 61
+    identsym  shift, and go to state 56
 
 
 State 32
 
-   30 writeStmt: "write" . expr
+   30 writeStmt: "write" • expr
 
     identsym   shift, and go to state 48
     numbersym  shift, and go to state 49
-    "+"        shift, and go to state 50
-    "-"        shift, and go to state 51
 
-    expr     go to state 62
-    term     go to state 57
-    factor   go to state 58
-    posSign  go to state 59
+    expr  go to state 57
 
 
 State 33
 
-   31 skipStmt: "skip" .
+   31 skipStmt: "skip" •
 
     $default  reduce using rule 31 (skipStmt)
 
 
 State 34
 
-    2 block: constDecls varDecls procDecls stmt .
+    2 block: constDecls varDecls procDecls stmt •
 
     $default  reduce using rule 2 (block)
 
 
 State 35
 
-   16 stmt: assignStmt .
+   16 stmt: assignStmt •
 
     $default  reduce using rule 16 (stmt)
 
 
 State 36
 
-   17 stmt: callStmt .
+   17 stmt: callStmt •
 
     $default  reduce using rule 17 (stmt)
 
 
 State 37
 
-   18 stmt: beginStmt .
+   18 stmt: beginStmt •
 
     $default  reduce using rule 18 (stmt)
 
 
 State 38
 
-   19 stmt: ifStmt .
+   19 stmt: ifStmt •
 
     $default  reduce using rule 19 (stmt)
 
 
 State 39
 
-   20 stmt: whileStmt .
+   20 stmt: whileStmt •
 
     $default  reduce using rule 20 (stmt)
 
 
 State 40
 
-   21 stmt: readStmt .
+   21 stmt: readStmt •
 
     $default  reduce using rule 21 (stmt)
 
 
 State 41
 
-   22 stmt: writeStmt .
+   22 stmt: writeStmt •
 
     $default  reduce using rule 22 (stmt)
 
 
 State 42
 
-   23 stmt: skipStmt .
+   23 stmt: skipStmt •
 
     $default  reduce using rule 23 (stmt)
 
 
 State 43
 
-   15 procDecl: "procedure" identsym block .
+   15 procDecl: "procedure" identsym block •
 
     $default  reduce using rule 15 (procDecl)
 
 
 State 44
 
-   24 assignStmt: identsym ":=" . expr
+   24 assignStmt: identsym ":=" • expr
 
     identsym   shift, and go to state 48
     numbersym  shift, and go to state 49
-    "+"        shift, and go to state 50
-    "-"        shift, and go to state 51
 
-    expr     go to state 63
-    term     go to state 57
-    factor   go to state 58
-    posSign  go to state 59
+    expr  go to state 58
 
 
 State 45
 
-   25 callStmt: "call" identsym .
+   25 callStmt: "call" identsym •
 
     $default  reduce using rule 25 (callStmt)
 
 
 State 46
 
-   32 stmts: stmt .
+   32 stmts: stmt •
 
     $default  reduce using rule 32 (stmts)
 
 
 State 47
 
-   26 beginStmt: "begin" stmts . "end"
+   26 beginStmt: "begin" stmts • "end"
 
-    "end"  shift, and go to state 64
+    "end"  shift, and go to state 59
 
 
 State 48
 
-   37 expr: identsym .
-   53 factor: identsym .
+   37 expr: identsym •
 
-    $end       reduce using rule 37 (expr)
-    $end       [reduce using rule 53 (factor)]
-    identsym   reduce using rule 37 (expr)
-    identsym   [reduce using rule 53 (factor)]
-    numbersym  reduce using rule 37 (expr)
-    numbersym  [reduce using rule 53 (factor)]
-    "+"        reduce using rule 37 (expr)
-    "+"        [reduce using rule 53 (factor)]
-    "-"        reduce using rule 37 (expr)
-    "-"        [reduce using rule 53 (factor)]
-    "*"        reduce using rule 37 (expr)
-    "*"        [reduce using rule 53 (factor)]
-    "/"        reduce using rule 37 (expr)
-    "/"        [reduce using rule 53 (factor)]
-    "="        reduce using rule 37 (expr)
-    "="        [reduce using rule 53 (factor)]
-    "call"     reduce using rule 37 (expr)
-    "call"     [reduce using rule 53 (factor)]
-    "begin"    reduce using rule 37 (expr)
-    "begin"    [reduce using rule 53 (factor)]
-    "end"      reduce using rule 37 (expr)
-    "end"      [reduce using rule 53 (factor)]
-    "if"       reduce using rule 37 (expr)
-    "if"       [reduce using rule 53 (factor)]
-    "then"     reduce using rule 37 (expr)
-    "then"     [reduce using rule 53 (factor)]
-    "else"     reduce using rule 37 (expr)
-    "else"     [reduce using rule 53 (factor)]
-    "while"    reduce using rule 37 (expr)
-    "while"    [reduce using rule 53 (factor)]
-    "do"       reduce using rule 37 (expr)
-    "do"       [reduce using rule 53 (factor)]
-    "read"     reduce using rule 37 (expr)
-    "read"     [reduce using rule 53 (factor)]
-    "write"    reduce using rule 37 (expr)
-    "write"    [reduce using rule 53 (factor)]
-    "skip"     reduce using rule 37 (expr)
-    "skip"     [reduce using rule 53 (factor)]
-    "<>"       reduce using rule 37 (expr)
-    "<>"       [reduce using rule 53 (factor)]
-    "<"        reduce using rule 37 (expr)
-    "<"        [reduce using rule 53 (factor)]
-    "<="       reduce using rule 37 (expr)
-    "<="       [reduce using rule 53 (factor)]
-    ">"        reduce using rule 37 (expr)
-    ">"        [reduce using rule 53 (factor)]
-    ">="       reduce using rule 37 (expr)
-    ">="       [reduce using rule 53 (factor)]
-    $default   reduce using rule 37 (expr)
+    $default  reduce using rule 37 (expr)
 
 
 State 49
 
-   38 expr: numbersym .
+   38 expr: numbersym •
 
     $default  reduce using rule 38 (expr)
 
 
 State 50
 
-   57 posSign: "+" .
+   35 oddCondition: "odd" • expr
 
-    $default  reduce using rule 57 (posSign)
+    identsym   shift, and go to state 48
+    numbersym  shift, and go to state 49
+
+    expr  go to state 60
 
 
 State 51
 
-   54 factor: "-" . numbersym
+   27 ifStmt: "if" condition • "then" stmt "else" stmt "end"
 
-    numbersym  shift, and go to state 65
+    "then"  shift, and go to state 61
 
 
 State 52
 
-   35 oddCondition: "odd" . expr
-
-    identsym   shift, and go to state 48
-    numbersym  shift, and go to state 49
-    "+"        shift, and go to state 50
-    "-"        shift, and go to state 51
-
-    expr     go to state 66
-    term     go to state 57
-    factor   go to state 58
-    posSign  go to state 59
-
-
-State 53
-
-   27 ifStmt: "if" condition . "then" stmt "else" stmt "end"
-
-    "then"  shift, and go to state 67
-
-
-State 54
-
-   33 condition: oddCondition .
+   33 condition: oddCondition •
 
     $default  reduce using rule 33 (condition)
 
 
-State 55
+State 53
 
-   36 expr: expr . relOpCondition expr
-   39 relOpCondition: expr . relOp expr
-   48 expr: expr . "+" term
-   49     | expr . "-" term
-   56 factor: expr .
+   36 expr: expr • relOpCondition expr
+   39 relOpCondition: expr • relOp expr
 
     identsym   shift, and go to state 48
     numbersym  shift, and go to state 49
-    "+"        shift, and go to state 68
-    "-"        shift, and go to state 69
-    "="        shift, and go to state 70
-    "<>"       shift, and go to state 71
-    "<"        shift, and go to state 72
-    "<="       shift, and go to state 73
-    ">"        shift, and go to state 74
-    ">="       shift, and go to state 75
+    "="        shift, and go to state 62
+    "<>"       shift, and go to state 63
+    "<"        shift, and go to state 64
+    "<="       shift, and go to state 65
+    ">"        shift, and go to state 66
+    ">="       shift, and go to state 67
 
-    identsym   [reduce using rule 56 (factor)]
-    numbersym  [reduce using rule 56 (factor)]
-    "+"        [reduce using rule 56 (factor)]
-    "-"        [reduce using rule 56 (factor)]
-    "="        [reduce using rule 56 (factor)]
-    "<>"       [reduce using rule 56 (factor)]
-    "<"        [reduce using rule 56 (factor)]
-    "<="       [reduce using rule 56 (factor)]
-    ">"        [reduce using rule 56 (factor)]
-    ">="       [reduce using rule 56 (factor)]
-    $default   reduce using rule 56 (factor)
-
-    expr            go to state 55
-    relOpCondition  go to state 76
-    relOp           go to state 77
-    term            go to state 57
-    factor          go to state 58
-    posSign         go to state 59
+    expr            go to state 53
+    relOpCondition  go to state 68
+    relOp           go to state 69
 
 
-State 56
+State 54
 
-   34 condition: relOpCondition .
+   34 condition: relOpCondition •
 
     $default  reduce using rule 34 (condition)
 
 
-State 57
+State 55
 
-   47 expr: term .
-   51 term: term . "*" factor
-   52     | term . "/" factor
+   28 whileStmt: "while" condition • "do" stmt "end"
 
-    "*"  shift, and go to state 78
-    "/"  shift, and go to state 79
-
-    "*"       [reduce using rule 47 (expr)]
-    "/"       [reduce using rule 47 (expr)]
-    $default  reduce using rule 47 (expr)
+    "do"  shift, and go to state 70
 
 
-State 58
+State 56
 
-   50 term: factor .
-
-    $default  reduce using rule 50 (term)
-
-
-State 59
-
-   55 factor: posSign . numbersym
-
-    numbersym  shift, and go to state 80
-
-
-State 60
-
-   28 whileStmt: "while" condition . "do" stmt "end"
-
-    "do"  shift, and go to state 81
-
-
-State 61
-
-   29 readStmt: "read" identsym .
+   29 readStmt: "read" identsym •
 
     $default  reduce using rule 29 (readStmt)
 
 
-State 62
+State 57
 
-   30 writeStmt: "write" expr .
-   36 expr: expr . relOpCondition expr
-   48     | expr . "+" term
-   49     | expr . "-" term
-   56 factor: expr .
+   30 writeStmt: "write" expr •
+   36 expr: expr • relOpCondition expr
 
     identsym   shift, and go to state 48
     numbersym  shift, and go to state 49
-    "+"        shift, and go to state 68
-    "-"        shift, and go to state 69
 
-    $end       reduce using rule 30 (writeStmt)
-    $end       [reduce using rule 56 (factor)]
-    identsym   [reduce using rule 30 (writeStmt)]
-    identsym   [reduce using rule 56 (factor)]
-    numbersym  [reduce using rule 56 (factor)]
-    "+"        [reduce using rule 56 (factor)]
-    "-"        [reduce using rule 56 (factor)]
-    "*"        reduce using rule 56 (factor)
-    "/"        reduce using rule 56 (factor)
-    "call"     reduce using rule 30 (writeStmt)
-    "call"     [reduce using rule 56 (factor)]
-    "begin"    reduce using rule 30 (writeStmt)
-    "begin"    [reduce using rule 56 (factor)]
-    "end"      reduce using rule 30 (writeStmt)
-    "end"      [reduce using rule 56 (factor)]
-    "if"       reduce using rule 30 (writeStmt)
-    "if"       [reduce using rule 56 (factor)]
-    "else"     reduce using rule 30 (writeStmt)
-    "else"     [reduce using rule 56 (factor)]
-    "while"    reduce using rule 30 (writeStmt)
-    "while"    [reduce using rule 56 (factor)]
-    "read"     reduce using rule 30 (writeStmt)
-    "read"     [reduce using rule 56 (factor)]
-    "write"    reduce using rule 30 (writeStmt)
-    "write"    [reduce using rule 56 (factor)]
-    "skip"     reduce using rule 30 (writeStmt)
-    "skip"     [reduce using rule 56 (factor)]
-    $default   reduce using rule 30 (writeStmt)
+    identsym  [reduce using rule 30 (writeStmt)]
+    $default  reduce using rule 30 (writeStmt)
 
-    expr            go to state 55
-    relOpCondition  go to state 76
-    term            go to state 57
-    factor          go to state 58
-    posSign         go to state 59
+    expr            go to state 53
+    relOpCondition  go to state 68
 
 
-State 63
+State 58
 
-   24 assignStmt: identsym ":=" expr .
-   36 expr: expr . relOpCondition expr
-   48     | expr . "+" term
-   49     | expr . "-" term
-   56 factor: expr .
+   24 assignStmt: identsym ":=" expr •
+   36 expr: expr • relOpCondition expr
 
     identsym   shift, and go to state 48
     numbersym  shift, and go to state 49
-    "+"        shift, and go to state 68
-    "-"        shift, and go to state 69
 
-    $end       reduce using rule 24 (assignStmt)
-    $end       [reduce using rule 56 (factor)]
-    identsym   [reduce using rule 24 (assignStmt)]
-    identsym   [reduce using rule 56 (factor)]
-    numbersym  [reduce using rule 56 (factor)]
-    "+"        [reduce using rule 56 (factor)]
-    "-"        [reduce using rule 56 (factor)]
-    "*"        reduce using rule 56 (factor)
-    "/"        reduce using rule 56 (factor)
-    "call"     reduce using rule 24 (assignStmt)
-    "call"     [reduce using rule 56 (factor)]
-    "begin"    reduce using rule 24 (assignStmt)
-    "begin"    [reduce using rule 56 (factor)]
-    "end"      reduce using rule 24 (assignStmt)
-    "end"      [reduce using rule 56 (factor)]
-    "if"       reduce using rule 24 (assignStmt)
-    "if"       [reduce using rule 56 (factor)]
-    "else"     reduce using rule 24 (assignStmt)
-    "else"     [reduce using rule 56 (factor)]
-    "while"    reduce using rule 24 (assignStmt)
-    "while"    [reduce using rule 56 (factor)]
-    "read"     reduce using rule 24 (assignStmt)
-    "read"     [reduce using rule 56 (factor)]
-    "write"    reduce using rule 24 (assignStmt)
-    "write"    [reduce using rule 56 (factor)]
-    "skip"     reduce using rule 24 (assignStmt)
-    "skip"     [reduce using rule 56 (factor)]
-    $default   reduce using rule 24 (assignStmt)
+    identsym  [reduce using rule 24 (assignStmt)]
+    $default  reduce using rule 24 (assignStmt)
 
-    expr            go to state 55
-    relOpCondition  go to state 76
-    term            go to state 57
-    factor          go to state 58
-    posSign         go to state 59
+    expr            go to state 53
+    relOpCondition  go to state 68
 
 
-State 64
+State 59
 
-   26 beginStmt: "begin" stmts "end" .
+   26 beginStmt: "begin" stmts "end" •
 
     $default  reduce using rule 26 (beginStmt)
 
 
-State 65
+State 60
 
-   54 factor: "-" numbersym .
-
-    $default  reduce using rule 54 (factor)
-
-
-State 66
-
-   35 oddCondition: "odd" expr .
-   36 expr: expr . relOpCondition expr
-   48     | expr . "+" term
-   49     | expr . "-" term
-   56 factor: expr .
+   35 oddCondition: "odd" expr •
+   36 expr: expr • relOpCondition expr
 
     identsym   shift, and go to state 48
     numbersym  shift, and go to state 49
-    "+"        shift, and go to state 68
-    "-"        shift, and go to state 69
 
-    identsym   [reduce using rule 56 (factor)]
-    numbersym  [reduce using rule 56 (factor)]
-    "+"        [reduce using rule 56 (factor)]
-    "-"        [reduce using rule 56 (factor)]
-    "*"        reduce using rule 56 (factor)
-    "/"        reduce using rule 56 (factor)
-    "then"     reduce using rule 35 (oddCondition)
-    "then"     [reduce using rule 56 (factor)]
-    "do"       reduce using rule 35 (oddCondition)
-    "do"       [reduce using rule 56 (factor)]
-    $default   reduce using rule 35 (oddCondition)
+    $default  reduce using rule 35 (oddCondition)
 
-    expr            go to state 55
-    relOpCondition  go to state 76
-    term            go to state 57
-    factor          go to state 58
-    posSign         go to state 59
+    expr            go to state 53
+    relOpCondition  go to state 68
 
 
-State 67
+State 61
 
-   27 ifStmt: "if" condition "then" . stmt "else" stmt "end"
+   27 ifStmt: "if" condition "then" • stmt "else" stmt "end"
 
     identsym  shift, and go to state 26
     "call"    shift, and go to state 27
@@ -1061,7 +802,7 @@ State 67
     "write"   shift, and go to state 32
     "skip"    shift, and go to state 33
 
-    stmt        go to state 82
+    stmt        go to state 71
     assignStmt  go to state 35
     callStmt    go to state 36
     beginStmt   go to state 37
@@ -1072,152 +813,71 @@ State 67
     skipStmt    go to state 42
 
 
-State 68
+State 62
 
-   48 expr: expr "+" . term
-   57 posSign: "+" .
-
-    identsym   shift, and go to state 48
-    numbersym  shift, and go to state 49
-    "+"        shift, and go to state 50
-    "-"        shift, and go to state 51
-
-    numbersym  [reduce using rule 57 (posSign)]
-
-    expr     go to state 83
-    term     go to state 84
-    factor   go to state 58
-    posSign  go to state 59
-
-
-State 69
-
-   49 expr: expr "-" . term
-   54 factor: "-" . numbersym
-
-    identsym   shift, and go to state 48
-    numbersym  shift, and go to state 85
-    "+"        shift, and go to state 50
-    "-"        shift, and go to state 51
-
-    expr     go to state 83
-    term     go to state 86
-    factor   go to state 58
-    posSign  go to state 59
-
-
-State 70
-
-   40 relOp: "=" .
+   40 relOp: "=" •
 
     $default  reduce using rule 40 (relOp)
 
 
-State 71
+State 63
 
-   41 relOp: "<>" .
+   41 relOp: "<>" •
 
     $default  reduce using rule 41 (relOp)
 
 
-State 72
+State 64
 
-   42 relOp: "<" .
+   42 relOp: "<" •
 
     $default  reduce using rule 42 (relOp)
 
 
-State 73
+State 65
 
-   43 relOp: "<=" .
+   43 relOp: "<=" •
 
     $default  reduce using rule 43 (relOp)
 
 
-State 74
+State 66
 
-   44 relOp: ">" .
+   44 relOp: ">" •
 
     $default  reduce using rule 44 (relOp)
 
 
-State 75
+State 67
 
-   45 relOp: ">=" .
+   45 relOp: ">=" •
 
     $default  reduce using rule 45 (relOp)
 
 
-State 76
+State 68
 
-   36 expr: expr relOpCondition . expr
-
-    identsym   shift, and go to state 48
-    numbersym  shift, and go to state 49
-    "+"        shift, and go to state 50
-    "-"        shift, and go to state 51
-
-    expr     go to state 87
-    term     go to state 57
-    factor   go to state 58
-    posSign  go to state 59
-
-
-State 77
-
-   39 relOpCondition: expr relOp . expr
+   36 expr: expr relOpCondition • expr
 
     identsym   shift, and go to state 48
     numbersym  shift, and go to state 49
-    "+"        shift, and go to state 50
-    "-"        shift, and go to state 51
 
-    expr     go to state 88
-    term     go to state 57
-    factor   go to state 58
-    posSign  go to state 59
+    expr  go to state 72
 
 
-State 78
+State 69
 
-   51 term: term "*" . factor
+   39 relOpCondition: expr relOp • expr
 
     identsym   shift, and go to state 48
     numbersym  shift, and go to state 49
-    "+"        shift, and go to state 50
-    "-"        shift, and go to state 51
 
-    expr     go to state 83
-    term     go to state 57
-    factor   go to state 89
-    posSign  go to state 59
+    expr  go to state 73
 
 
-State 79
+State 70
 
-   52 term: term "/" . factor
-
-    identsym   shift, and go to state 48
-    numbersym  shift, and go to state 49
-    "+"        shift, and go to state 50
-    "-"        shift, and go to state 51
-
-    expr     go to state 83
-    term     go to state 57
-    factor   go to state 90
-    posSign  go to state 59
-
-
-State 80
-
-   55 factor: posSign numbersym .
-
-    $default  reduce using rule 55 (factor)
-
-
-State 81
-
-   28 whileStmt: "while" condition "do" . stmt "end"
+   28 whileStmt: "while" condition "do" • stmt "end"
 
     identsym  shift, and go to state 26
     "call"    shift, and go to state 27
@@ -1228,7 +888,7 @@ State 81
     "write"   shift, and go to state 32
     "skip"    shift, and go to state 33
 
-    stmt        go to state 91
+    stmt        go to state 74
     assignStmt  go to state 35
     callStmt    go to state 36
     beginStmt   go to state 37
@@ -1239,420 +899,55 @@ State 81
     skipStmt    go to state 42
 
 
-State 82
+State 71
 
-   27 ifStmt: "if" condition "then" stmt . "else" stmt "end"
+   27 ifStmt: "if" condition "then" stmt • "else" stmt "end"
 
-    "else"  shift, and go to state 92
+    "else"  shift, and go to state 75
 
 
-State 83
+State 72
 
-   36 expr: expr . relOpCondition expr
-   48     | expr . "+" term
-   49     | expr . "-" term
-   56 factor: expr .
+   36 expr: expr • relOpCondition expr
+   36     | expr relOpCondition expr •
 
     identsym   shift, and go to state 48
     numbersym  shift, and go to state 49
-    "+"        shift, and go to state 68
-    "-"        shift, and go to state 69
 
-    identsym   [reduce using rule 56 (factor)]
-    numbersym  [reduce using rule 56 (factor)]
-    "+"        [reduce using rule 56 (factor)]
-    "-"        [reduce using rule 56 (factor)]
-    $default   reduce using rule 56 (factor)
-
-    expr            go to state 55
-    relOpCondition  go to state 76
-    term            go to state 57
-    factor          go to state 58
-    posSign         go to state 59
-
-
-State 84
-
-   47 expr: term .
-   48     | expr "+" term .
-   51 term: term . "*" factor
-   52     | term . "/" factor
-
-    "*"  shift, and go to state 78
-    "/"  shift, and go to state 79
-
-    $end       reduce using rule 47 (expr)
-    $end       [reduce using rule 48 (expr)]
-    identsym   reduce using rule 47 (expr)
-    identsym   [reduce using rule 48 (expr)]
-    numbersym  reduce using rule 47 (expr)
-    numbersym  [reduce using rule 48 (expr)]
-    "+"        reduce using rule 47 (expr)
-    "+"        [reduce using rule 48 (expr)]
-    "-"        reduce using rule 47 (expr)
-    "-"        [reduce using rule 48 (expr)]
-    "*"        [reduce using rule 47 (expr)]
-    "*"        [reduce using rule 48 (expr)]
-    "/"        [reduce using rule 47 (expr)]
-    "/"        [reduce using rule 48 (expr)]
-    "="        reduce using rule 47 (expr)
-    "="        [reduce using rule 48 (expr)]
-    "call"     reduce using rule 47 (expr)
-    "call"     [reduce using rule 48 (expr)]
-    "begin"    reduce using rule 47 (expr)
-    "begin"    [reduce using rule 48 (expr)]
-    "end"      reduce using rule 47 (expr)
-    "end"      [reduce using rule 48 (expr)]
-    "if"       reduce using rule 47 (expr)
-    "if"       [reduce using rule 48 (expr)]
-    "then"     reduce using rule 47 (expr)
-    "then"     [reduce using rule 48 (expr)]
-    "else"     reduce using rule 47 (expr)
-    "else"     [reduce using rule 48 (expr)]
-    "while"    reduce using rule 47 (expr)
-    "while"    [reduce using rule 48 (expr)]
-    "do"       reduce using rule 47 (expr)
-    "do"       [reduce using rule 48 (expr)]
-    "read"     reduce using rule 47 (expr)
-    "read"     [reduce using rule 48 (expr)]
-    "write"    reduce using rule 47 (expr)
-    "write"    [reduce using rule 48 (expr)]
-    "skip"     reduce using rule 47 (expr)
-    "skip"     [reduce using rule 48 (expr)]
-    "<>"       reduce using rule 47 (expr)
-    "<>"       [reduce using rule 48 (expr)]
-    "<"        reduce using rule 47 (expr)
-    "<"        [reduce using rule 48 (expr)]
-    "<="       reduce using rule 47 (expr)
-    "<="       [reduce using rule 48 (expr)]
-    ">"        reduce using rule 47 (expr)
-    ">"        [reduce using rule 48 (expr)]
-    ">="       reduce using rule 47 (expr)
-    ">="       [reduce using rule 48 (expr)]
-    $default   reduce using rule 47 (expr)
-
-
-State 85
-
-   38 expr: numbersym .
-   54 factor: "-" numbersym .
-
-    identsym   reduce using rule 38 (expr)
-    identsym   [reduce using rule 54 (factor)]
-    numbersym  reduce using rule 38 (expr)
-    numbersym  [reduce using rule 54 (factor)]
-    "+"        reduce using rule 38 (expr)
-    "+"        [reduce using rule 54 (factor)]
-    "-"        reduce using rule 38 (expr)
-    "-"        [reduce using rule 54 (factor)]
-    "*"        reduce using rule 38 (expr)
-    "*"        [reduce using rule 54 (factor)]
-    "/"        reduce using rule 38 (expr)
-    "/"        [reduce using rule 54 (factor)]
-    "="        reduce using rule 38 (expr)
-    "="        [reduce using rule 54 (factor)]
-    "<>"       reduce using rule 38 (expr)
-    "<>"       [reduce using rule 54 (factor)]
-    "<"        reduce using rule 38 (expr)
-    "<"        [reduce using rule 54 (factor)]
-    "<="       reduce using rule 38 (expr)
-    "<="       [reduce using rule 54 (factor)]
-    ">"        reduce using rule 38 (expr)
-    ">"        [reduce using rule 54 (factor)]
-    ">="       reduce using rule 38 (expr)
-    ">="       [reduce using rule 54 (factor)]
-    $default   reduce using rule 38 (expr)
-
-
-State 86
-
-   47 expr: term .
-   49     | expr "-" term .
-   51 term: term . "*" factor
-   52     | term . "/" factor
-
-    "*"  shift, and go to state 78
-    "/"  shift, and go to state 79
-
-    $end       reduce using rule 47 (expr)
-    $end       [reduce using rule 49 (expr)]
-    identsym   reduce using rule 47 (expr)
-    identsym   [reduce using rule 49 (expr)]
-    numbersym  reduce using rule 47 (expr)
-    numbersym  [reduce using rule 49 (expr)]
-    "+"        reduce using rule 47 (expr)
-    "+"        [reduce using rule 49 (expr)]
-    "-"        reduce using rule 47 (expr)
-    "-"        [reduce using rule 49 (expr)]
-    "*"        [reduce using rule 47 (expr)]
-    "*"        [reduce using rule 49 (expr)]
-    "/"        [reduce using rule 47 (expr)]
-    "/"        [reduce using rule 49 (expr)]
-    "="        reduce using rule 47 (expr)
-    "="        [reduce using rule 49 (expr)]
-    "call"     reduce using rule 47 (expr)
-    "call"     [reduce using rule 49 (expr)]
-    "begin"    reduce using rule 47 (expr)
-    "begin"    [reduce using rule 49 (expr)]
-    "end"      reduce using rule 47 (expr)
-    "end"      [reduce using rule 49 (expr)]
-    "if"       reduce using rule 47 (expr)
-    "if"       [reduce using rule 49 (expr)]
-    "then"     reduce using rule 47 (expr)
-    "then"     [reduce using rule 49 (expr)]
-    "else"     reduce using rule 47 (expr)
-    "else"     [reduce using rule 49 (expr)]
-    "while"    reduce using rule 47 (expr)
-    "while"    [reduce using rule 49 (expr)]
-    "do"       reduce using rule 47 (expr)
-    "do"       [reduce using rule 49 (expr)]
-    "read"     reduce using rule 47 (expr)
-    "read"     [reduce using rule 49 (expr)]
-    "write"    reduce using rule 47 (expr)
-    "write"    [reduce using rule 49 (expr)]
-    "skip"     reduce using rule 47 (expr)
-    "skip"     [reduce using rule 49 (expr)]
-    "<>"       reduce using rule 47 (expr)
-    "<>"       [reduce using rule 49 (expr)]
-    "<"        reduce using rule 47 (expr)
-    "<"        [reduce using rule 49 (expr)]
-    "<="       reduce using rule 47 (expr)
-    "<="       [reduce using rule 49 (expr)]
-    ">"        reduce using rule 47 (expr)
-    ">"        [reduce using rule 49 (expr)]
-    ">="       reduce using rule 47 (expr)
-    ">="       [reduce using rule 49 (expr)]
-    $default   reduce using rule 47 (expr)
-
-
-State 87
-
-   36 expr: expr . relOpCondition expr
-   36     | expr relOpCondition expr .
-   48     | expr . "+" term
-   49     | expr . "-" term
-   56 factor: expr .
-
-    identsym   shift, and go to state 48
-    numbersym  shift, and go to state 49
-    "+"        shift, and go to state 68
-    "-"        shift, and go to state 69
-
-    $end       reduce using rule 36 (expr)
-    $end       [reduce using rule 56 (factor)]
     identsym   [reduce using rule 36 (expr)]
-    identsym   [reduce using rule 56 (factor)]
     numbersym  [reduce using rule 36 (expr)]
-    numbersym  [reduce using rule 56 (factor)]
-    "+"        [reduce using rule 36 (expr)]
-    "+"        [reduce using rule 56 (factor)]
-    "-"        [reduce using rule 36 (expr)]
-    "-"        [reduce using rule 56 (factor)]
-    "*"        reduce using rule 36 (expr)
-    "*"        [reduce using rule 56 (factor)]
-    "/"        reduce using rule 36 (expr)
-    "/"        [reduce using rule 56 (factor)]
-    "="        reduce using rule 36 (expr)
-    "="        [reduce using rule 56 (factor)]
-    "call"     reduce using rule 36 (expr)
-    "call"     [reduce using rule 56 (factor)]
-    "begin"    reduce using rule 36 (expr)
-    "begin"    [reduce using rule 56 (factor)]
-    "end"      reduce using rule 36 (expr)
-    "end"      [reduce using rule 56 (factor)]
-    "if"       reduce using rule 36 (expr)
-    "if"       [reduce using rule 56 (factor)]
-    "then"     reduce using rule 36 (expr)
-    "then"     [reduce using rule 56 (factor)]
-    "else"     reduce using rule 36 (expr)
-    "else"     [reduce using rule 56 (factor)]
-    "while"    reduce using rule 36 (expr)
-    "while"    [reduce using rule 56 (factor)]
-    "do"       reduce using rule 36 (expr)
-    "do"       [reduce using rule 56 (factor)]
-    "read"     reduce using rule 36 (expr)
-    "read"     [reduce using rule 56 (factor)]
-    "write"    reduce using rule 36 (expr)
-    "write"    [reduce using rule 56 (factor)]
-    "skip"     reduce using rule 36 (expr)
-    "skip"     [reduce using rule 56 (factor)]
-    "<>"       reduce using rule 36 (expr)
-    "<>"       [reduce using rule 56 (factor)]
-    "<"        reduce using rule 36 (expr)
-    "<"        [reduce using rule 56 (factor)]
-    "<="       reduce using rule 36 (expr)
-    "<="       [reduce using rule 56 (factor)]
-    ">"        reduce using rule 36 (expr)
-    ">"        [reduce using rule 56 (factor)]
-    ">="       reduce using rule 36 (expr)
-    ">="       [reduce using rule 56 (factor)]
     $default   reduce using rule 36 (expr)
 
-    expr            go to state 55
-    relOpCondition  go to state 76
-    term            go to state 57
-    factor          go to state 58
-    posSign         go to state 59
+    expr            go to state 53
+    relOpCondition  go to state 68
 
 
-State 88
+State 73
 
-   36 expr: expr . relOpCondition expr
-   39 relOpCondition: expr relOp expr .
-   48 expr: expr . "+" term
-   49     | expr . "-" term
-   56 factor: expr .
+   36 expr: expr • relOpCondition expr
+   39 relOpCondition: expr relOp expr •
 
     identsym   shift, and go to state 48
     numbersym  shift, and go to state 49
-    "+"        shift, and go to state 68
-    "-"        shift, and go to state 69
 
     identsym   [reduce using rule 39 (relOpCondition)]
-    identsym   [reduce using rule 56 (factor)]
     numbersym  [reduce using rule 39 (relOpCondition)]
-    numbersym  [reduce using rule 56 (factor)]
-    "+"        [reduce using rule 39 (relOpCondition)]
-    "+"        [reduce using rule 56 (factor)]
-    "-"        [reduce using rule 39 (relOpCondition)]
-    "-"        [reduce using rule 56 (factor)]
-    "*"        reduce using rule 56 (factor)
-    "/"        reduce using rule 56 (factor)
-    "then"     reduce using rule 39 (relOpCondition)
-    "then"     [reduce using rule 56 (factor)]
-    "do"       reduce using rule 39 (relOpCondition)
-    "do"       [reduce using rule 56 (factor)]
     $default   reduce using rule 39 (relOpCondition)
 
-    expr            go to state 55
-    relOpCondition  go to state 76
-    term            go to state 57
-    factor          go to state 58
-    posSign         go to state 59
+    expr            go to state 53
+    relOpCondition  go to state 68
 
 
-State 89
+State 74
 
-   50 term: factor .
-   51     | term "*" factor .
+   28 whileStmt: "while" condition "do" stmt • "end"
 
-    $end       reduce using rule 50 (term)
-    $end       [reduce using rule 51 (term)]
-    identsym   reduce using rule 50 (term)
-    identsym   [reduce using rule 51 (term)]
-    numbersym  reduce using rule 50 (term)
-    numbersym  [reduce using rule 51 (term)]
-    "+"        reduce using rule 50 (term)
-    "+"        [reduce using rule 51 (term)]
-    "-"        reduce using rule 50 (term)
-    "-"        [reduce using rule 51 (term)]
-    "*"        reduce using rule 50 (term)
-    "*"        [reduce using rule 51 (term)]
-    "/"        reduce using rule 50 (term)
-    "/"        [reduce using rule 51 (term)]
-    "="        reduce using rule 50 (term)
-    "="        [reduce using rule 51 (term)]
-    "call"     reduce using rule 50 (term)
-    "call"     [reduce using rule 51 (term)]
-    "begin"    reduce using rule 50 (term)
-    "begin"    [reduce using rule 51 (term)]
-    "end"      reduce using rule 50 (term)
-    "end"      [reduce using rule 51 (term)]
-    "if"       reduce using rule 50 (term)
-    "if"       [reduce using rule 51 (term)]
-    "then"     reduce using rule 50 (term)
-    "then"     [reduce using rule 51 (term)]
-    "else"     reduce using rule 50 (term)
-    "else"     [reduce using rule 51 (term)]
-    "while"    reduce using rule 50 (term)
-    "while"    [reduce using rule 51 (term)]
-    "do"       reduce using rule 50 (term)
-    "do"       [reduce using rule 51 (term)]
-    "read"     reduce using rule 50 (term)
-    "read"     [reduce using rule 51 (term)]
-    "write"    reduce using rule 50 (term)
-    "write"    [reduce using rule 51 (term)]
-    "skip"     reduce using rule 50 (term)
-    "skip"     [reduce using rule 51 (term)]
-    "<>"       reduce using rule 50 (term)
-    "<>"       [reduce using rule 51 (term)]
-    "<"        reduce using rule 50 (term)
-    "<"        [reduce using rule 51 (term)]
-    "<="       reduce using rule 50 (term)
-    "<="       [reduce using rule 51 (term)]
-    ">"        reduce using rule 50 (term)
-    ">"        [reduce using rule 51 (term)]
-    ">="       reduce using rule 50 (term)
-    ">="       [reduce using rule 51 (term)]
-    $default   reduce using rule 50 (term)
+    "end"  shift, and go to state 76
 
 
-State 90
+State 75
 
-   50 term: factor .
-   52     | term "/" factor .
-
-    $end       reduce using rule 50 (term)
-    $end       [reduce using rule 52 (term)]
-    identsym   reduce using rule 50 (term)
-    identsym   [reduce using rule 52 (term)]
-    numbersym  reduce using rule 50 (term)
-    numbersym  [reduce using rule 52 (term)]
-    "+"        reduce using rule 50 (term)
-    "+"        [reduce using rule 52 (term)]
-    "-"        reduce using rule 50 (term)
-    "-"        [reduce using rule 52 (term)]
-    "*"        reduce using rule 50 (term)
-    "*"        [reduce using rule 52 (term)]
-    "/"        reduce using rule 50 (term)
-    "/"        [reduce using rule 52 (term)]
-    "="        reduce using rule 50 (term)
-    "="        [reduce using rule 52 (term)]
-    "call"     reduce using rule 50 (term)
-    "call"     [reduce using rule 52 (term)]
-    "begin"    reduce using rule 50 (term)
-    "begin"    [reduce using rule 52 (term)]
-    "end"      reduce using rule 50 (term)
-    "end"      [reduce using rule 52 (term)]
-    "if"       reduce using rule 50 (term)
-    "if"       [reduce using rule 52 (term)]
-    "then"     reduce using rule 50 (term)
-    "then"     [reduce using rule 52 (term)]
-    "else"     reduce using rule 50 (term)
-    "else"     [reduce using rule 52 (term)]
-    "while"    reduce using rule 50 (term)
-    "while"    [reduce using rule 52 (term)]
-    "do"       reduce using rule 50 (term)
-    "do"       [reduce using rule 52 (term)]
-    "read"     reduce using rule 50 (term)
-    "read"     [reduce using rule 52 (term)]
-    "write"    reduce using rule 50 (term)
-    "write"    [reduce using rule 52 (term)]
-    "skip"     reduce using rule 50 (term)
-    "skip"     [reduce using rule 52 (term)]
-    "<>"       reduce using rule 50 (term)
-    "<>"       [reduce using rule 52 (term)]
-    "<"        reduce using rule 50 (term)
-    "<"        [reduce using rule 52 (term)]
-    "<="       reduce using rule 50 (term)
-    "<="       [reduce using rule 52 (term)]
-    ">"        reduce using rule 50 (term)
-    ">"        [reduce using rule 52 (term)]
-    ">="       reduce using rule 50 (term)
-    ">="       [reduce using rule 52 (term)]
-    $default   reduce using rule 50 (term)
-
-
-State 91
-
-   28 whileStmt: "while" condition "do" stmt . "end"
-
-    "end"  shift, and go to state 93
-
-
-State 92
-
-   27 ifStmt: "if" condition "then" stmt "else" . stmt "end"
+   27 ifStmt: "if" condition "then" stmt "else" • stmt "end"
 
     identsym  shift, and go to state 26
     "call"    shift, and go to state 27
@@ -1663,7 +958,7 @@ State 92
     "write"   shift, and go to state 32
     "skip"    shift, and go to state 33
 
-    stmt        go to state 94
+    stmt        go to state 77
     assignStmt  go to state 35
     callStmt    go to state 36
     beginStmt   go to state 37
@@ -1674,22 +969,22 @@ State 92
     skipStmt    go to state 42
 
 
-State 93
+State 76
 
-   28 whileStmt: "while" condition "do" stmt "end" .
+   28 whileStmt: "while" condition "do" stmt "end" •
 
     $default  reduce using rule 28 (whileStmt)
 
 
-State 94
+State 77
 
-   27 ifStmt: "if" condition "then" stmt "else" stmt . "end"
+   27 ifStmt: "if" condition "then" stmt "else" stmt • "end"
 
-    "end"  shift, and go to state 95
+    "end"  shift, and go to state 78
 
 
-State 95
+State 78
 
-   27 ifStmt: "if" condition "then" stmt "else" stmt "end" .
+   27 ifStmt: "if" condition "then" stmt "else" stmt "end" •
 
     $default  reduce using rule 27 (ifStmt)
