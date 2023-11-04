@@ -18,4 +18,4 @@ begin
       end
 end
 .
-hw3-declerrtest7.pl0: line 17 identifer "q" is not declared!
+hw3-declerrtest7.pl0: line 17 identifier "q" is not declared!

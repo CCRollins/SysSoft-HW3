@@ -6,4 +6,4 @@ begin
   write x
 end
 .
-hw3-declerrtest8.pl0: line 7 identifer "x" is not declared!
+hw3-declerrtest8.pl0: line 7 identifier "x" is not declared!
