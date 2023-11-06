@@ -29,7 +29,7 @@ extern void lexer_print_output_header();
 // Print information about the token t to stdout
 // followed by a newline
 extern void lexer_print_token(int t, unsigned int tline,
-			      const char *txt);
+							  const char *txt);
 
 /* Read all the tokens from the input file
  * and print each token on standard output

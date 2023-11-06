@@ -114,10 +114,6 @@ extern void setProgAST(block_t t);
 %%
  /* Write your grammar rules below and before the next %% */
 
-
-
-
-
 %%
 
 // Set the program's ast to be ast
