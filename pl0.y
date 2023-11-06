@@ -142,9 +142,9 @@ stmt : assignStmt {$$ = ast_stmt_assign($1);}
 | skipStmt {$$ = ast_stmt_skip($1);};
 
 assignStmt: identsym "=" expr ";"{$$ = ast_assign_stmt($1,$3);};
-callStmt: "call" ident{$$ = ast_call_stmt($2);};
+callStmt: "call" identsym{$$ = ast_call_stmt($2);};
 beginStmt: beginsym stmts{$$ = ast_begin_stmt($2);};
-ifStmt: "if" condition then_stmt else_stmt{$$ = ast_if_stmt($2,$3,$4);}; 
+ifStmt: "if" condition "then" "else"{$$ = ast_if_stmt($2,$3,$4);}; 
 whileStmt: "while" condition "do" stmt{$$= ast_while_stmt($2, $4);}
 readStmt : "read" identsym ";" { $$ = ast_read_stmt($2); } ;
 writeStmt: "write" expr ";"{$$ = ast_write_stmt($2);};
@@ -159,6 +159,26 @@ condition: oddCondition{$$ = ast_condition_odd($1);} | relOpCondition{$$ = ast_c
 oddCondition: "odd" expr{$$ = ast_odd_condition($2);};
 relOpCondition: expr relOp expr{$$ = ast_rel_op_condition($1, $2, $3);}
 relOp : "=" | "<>" | "<" | "<=" | ">" | ">=" ;
+
+expr : term 
+     | term relOp term
+       { $$ = ast_expr_binary_op(ast_binary_op_expr($1, $2, $3)); }
+     ;
+
+term : factor
+     | term "*" factor
+       { $$ = ast_expr_binary_op(ast_binary_op_expr($1, $2, $3)); }
+     | term "/" factor
+       { $$ = ast_expr_binary_op(ast_binary_op_expr($1, $2, $3)); }
+     ;
+
+factor : identsym { $$ = ast_expr_ident($1); }
+     | numbersym { $$ = ast_expr_number($1); }
+     | "(" expr ")" { $$ = $2; }
+     ;
+
+posSign: "+" | %empty ;
+
 
 empty : %empty
     { file_location *floc
