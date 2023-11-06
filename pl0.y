@@ -160,10 +160,9 @@ oddCondition: "odd" expr{$$ = ast_odd_condition($2);};
 relOpCondition: expr relOp expr{$$ = ast_rel_op_condition($1, $2, $3);}
 relOp : "=" | "<>" | "<" | "<=" | ">" | ">=" ;
 
-expr : term 
-     | term relOp term
-       { $$ = ast_expr_binary_op(ast_binary_op_expr($1, $2, $3)); }
-     ;
+expr : term
+     | expr "+" term {$$ = ast_expr_binary_op(ast_binary_op_expr($1, $2, $3)); }
+     | expr "-" term{ $$ = ast_expr_binary_op(ast_binary_op_expr($1, $2, $3)); }
 
 term : factor
      | term "*" factor
@@ -173,11 +172,12 @@ term : factor
      ;
 
 factor : identsym { $$ = ast_expr_ident($1); }
-     | numbersym { $$ = ast_expr_number($1); }
+     | "-" numbersym { $$ = ast_expr_negated_number($1, $2);}
+     | posSign numbersym{ $$ = ast_expr_pos_number($1, $2);}
      | "(" expr ")" { $$ = $2; }
      ;
 
-posSign : "+"{$$ = ast_token(file_location_make(lexer_filename(), lexer_line()), "+", plussym)} 
+posSign : "+"{$$ = ast_token(file_location_make(lexer_filename(), lexer_line()), "+", plussym);} 
      | empty{};
 
 empty : %empty{ file_location *floc
