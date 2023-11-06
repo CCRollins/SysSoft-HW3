@@ -1,1 +1,5 @@
-hw3-test1.pl0:4: syntax error, unexpected write, expecting ; or end
+begin
+  write 49;
+  write 10
+end
+.

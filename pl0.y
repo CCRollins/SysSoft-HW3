@@ -125,7 +125,7 @@ constDef :  identsym "=" numbersym { $$ = ast_const_def($1,$3); };
 
 varDecls : empty { $$ = ast_var_decls_empty($1); } | varDecls varDecl { $$ = ast_var_decls($1, $2); } ;
 varDecl : "var" idents ";"{ $$ = ast_var_decl($2); } ;
-idents : identsym { $$ = ast_idents_singleton($1); } | idents "," identsym {$$ = ast_idents($1, $3); };
+idents : identsym { $$ = ast_idents_singleton($1); } | idents "," identsym {$$ = ast_idents($1, $3);};
 
 procDecls : empty { $$ = ast_proc_decls_empty($1); } | procDecls procDecl { $$ = ast_proc_decls($1, $2); } ;
 procDecl : "procedure" identsym ";" block ";" { $$ = ast_proc_decl($2, $4);};
@@ -139,13 +139,13 @@ stmt : assignStmt {$$ = ast_stmt_assign($1);}
 | writeStmt {$$ = ast_stmt_write($1);}
 | skipStmt {$$ = ast_stmt_skip($1);};
 
-assignStmt: identsym ":=" expr {$$ = ast_assign_stmt($1,$3);};
+assignStmt: identsym becomessym expr {$$ = ast_assign_stmt($1,$3);};
 callStmt: "call" identsym {$$ = ast_call_stmt($2);};
 beginStmt: "begin" stmts "end"{$$ = ast_begin_stmt($2);};
 ifStmt: "if" condition "then" stmt "else" stmt{$$ = ast_if_stmt($2,$4,$6);}; 
 whileStmt: "while" condition "do" stmt{$$= ast_while_stmt($2, $4);} ;
-readStmt : "read" identsym ";" { $$ = ast_read_stmt($2); } ;
-writeStmt: "write" expr ";"{$$ = ast_write_stmt($2);};
+readStmt : "read" identsym { $$ = ast_read_stmt($2); } ;
+writeStmt: "write" expr {$$ = ast_write_stmt($2);};
 skipStmt: "skip"{file_location *floc
 	= file_location_make(lexer_filename(), lexer_line());
 	$$ = ast_skip_stmt(floc); } ;
