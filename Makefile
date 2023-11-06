@@ -23,7 +23,7 @@ PL0 = pl0
 # Feel free to edit the following definition of COMPILER_OBJECTS
 COMPILER_OBJECTS = $(COMPILER)_main.o $(PL0)_lexer.o \
 		parser.o unparser.o id_use.o \
-		id_attrs.o ast.o $(PL0).tab.o file_location.o utilities.o 
+		scope.o scope_check.o symtab.o id_attrs.o ast.o $(PL0).tab.o file_location.o utilities.o 
 #temp comment out: scope.o scope_check.o symtab.o. add back to above comp_objects when done
 
 # If you want to test the lexical analysis part separately,
