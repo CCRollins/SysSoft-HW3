@@ -1,7 +1,5 @@
 Nonterminals useless in grammar
 
-    procDecl
-    ifStmt
     posSign
 
 
@@ -10,34 +8,17 @@ Terminals unused in grammar
     "+"
     "-"
     "."
-    "procedure"
     "end"
-    "if"
-    "then"
-    "else"
 
 
 Rules useless in grammar
 
-   51 procDecls: procDecls procDecl
-
-   52 procDecl: procDecl identsym block
-
-   53 stmt: ifStmt
-
-   54 ifStmt: ifStmt condition "then" "else"
-
-   55 posSign: "+"
+   54 posSign: "+"
+   55        | empty
 
 
-Rules useless in parser due to conflicts
-
-   29 writeStmt: "write" expr ";"
-
-
-State 42 conflicts: 7 shift/reduce
-State 51 conflicts: 6 shift/reduce
-State 73 conflicts: 8 reduce/reduce
+State 47 conflicts: 8 shift/reduce
+State 56 conflicts: 6 shift/reduce
 
 
 Grammar
@@ -67,99 +48,103 @@ Grammar
    13       | idents "," identsym
 
    14 procDecls: empty
+   15          | procDecls procDecl
 
-   15 stmt: assignStmt
-   16     | callStmt
-   17     | beginStmt
-   18     | whileStmt
-   19     | readStmt
-   20     | writeStmt
-   21     | skipStmt
+   16 procDecl: "procedure" identsym ";" block ";"
 
-   22 assignStmt: identsym "=" expr ";"
+   17 stmt: assignStmt
+   18     | callStmt
+   19     | beginStmt
+   20     | ifStmt
+   21     | whileStmt
+   22     | readStmt
+   23     | writeStmt
+   24     | skipStmt
 
-   23 callStmt: "call" identsym
+   25 assignStmt: identsym "=" expr ";"
 
-   24 beginStmt: "begin" stmts
+   26 callStmt: "call" identsym
 
-   25 whileStmt: "while" condition "do" stmt
+   27 beginStmt: "begin" stmts
 
-   26 readStmt: "read" identsym ";"
+   28 ifStmt: "if" condition "then" stmt "else" stmt
 
-   27 writeStmt: "write" expr ";"
+   29 whileStmt: "while" condition "do" stmt
 
-   28 skipStmt: "skip"
+   30 readStmt: "read" identsym ";"
 
-   29 writeStmt: "write" expr ";"
+   31 writeStmt: "write" expr ";"
 
-   30 stmts: stmt
-   31      | stmts stmt
+   32 skipStmt: "skip"
 
-   32 condition: oddCondition
-   33          | relOpCondition
+   33 stmts: stmt
+   34      | stmts stmt
 
-   34 oddCondition: "odd" expr
+   35 condition: oddCondition
+   36          | relOpCondition
 
-   35 relOpCondition: expr relOp expr
+   37 oddCondition: "odd" expr
 
-   36 relOp: "="
-   37      | "<>"
-   38      | "<"
-   39      | "<="
-   40      | ">"
-   41      | ">="
+   38 relOpCondition: expr relOp expr
 
-   42 expr: term
-   43     | term relOp term
+   39 relOp: "="
+   40      | "<>"
+   41      | "<"
+   42      | "<="
+   43      | ">"
+   44      | ">="
 
-   44 term: factor
-   45     | term "*" factor
-   46     | term "/" factor
+   45 expr: term
+   46     | term relOp term
 
-   47 factor: identsym
-   48       | numbersym
-   49       | "(" expr ")"
+   47 term: factor
+   48     | term "*" factor
+   49     | term "/" factor
 
-   50 empty: ε
+   50 factor: identsym
+   51       | numbersym
+   52       | "(" expr ")"
+
+   53 empty: ε
 
 
 Terminals, with rules where they appear
 
     $end (0) 0
     error (256)
-    identsym <ident> (258) 5 12 13 22 23 26 47
-    numbersym <number> (259) 5 48
+    identsym <ident> (258) 5 12 13 16 25 26 30 50
+    numbersym <number> (259) 5 51
     "+" <token> (260)
     "-" <token> (261)
-    "*" <token> (262) 45
-    "/" <token> (263) 46
+    "*" <token> (262) 48
+    "/" <token> (263) 49
     "." <token> (264)
-    ";" <token> (265) 22 26 27 29
-    "=" <token> (266) 22 36
+    ";" <token> (265) 16 25 30 31
+    "=" <token> (266) 25 39
     "," <token> (267) 8 13
     ":=" <token> (268) 5
     "const" <token> (269) 5 6
     "var" <token> (270) 11
-    "procedure" <token> (271)
-    "call" <token> (272) 23
-    "begin" <token> (273) 24
+    "procedure" <token> (271) 16
+    "call" <token> (272) 26
+    "begin" <token> (273) 27
     "end" <token> (274)
-    "if" <token> (275)
-    "then" <token> (276)
-    "else" <token> (277)
-    "while" <token> (278) 25
-    "do" <token> (279) 25
-    "read" <token> (280) 26
-    "write" <token> (281) 27 29
-    "skip" <token> (282) 28
-    "odd" <token> (283) 34
-    "<>" <token> (284) 37
-    "<" <token> (285) 38
-    "<=" <token> (286) 39
-    ">" <token> (287) 40
-    ">=" <token> (288) 41
-    "(" <token> (289) 49
-    ")" <token> (290) 49
+    "if" <token> (275) 28
+    "then" <token> (276) 28
+    "else" <token> (277) 28
+    "while" <token> (278) 29
+    "do" <token> (279) 29
+    "read" <token> (280) 30
+    "write" <token> (281) 31
+    "skip" <token> (282) 32
+    "odd" <token> (283) 37
+    "<>" <token> (284) 40
+    "<" <token> (285) 41
+    "<=" <token> (286) 42
+    ">" <token> (287) 43
+    ">=" <token> (288) 44
+    "(" <token> (289) 52
+    ")" <token> (290) 52
 
 
 Nonterminals, with rules where they appear
@@ -171,7 +156,7 @@ Nonterminals, with rules where they appear
         on right: 0
     block <block> (38)
         on left: 2
-        on right: 1
+        on right: 1 16
     constDecls <const_decls> (39)
         on left: 3 4
         on right: 2 4
@@ -194,58 +179,64 @@ Nonterminals, with rules where they appear
         on left: 12 13
         on right: 11 13
     procDecls <proc_decls> (46)
-        on left: 14
-        on right: 2
-    stmt <stmt> (47)
-        on left: 15 16 17 18 19 20 21
-        on right: 2 25 30 31
-    assignStmt <assign_stmt> (48)
-        on left: 22
+        on left: 14 15
+        on right: 2 15
+    procDecl <proc_decl> (47)
+        on left: 16
         on right: 15
-    callStmt <call_stmt> (49)
-        on left: 23
-        on right: 16
-    beginStmt <begin_stmt> (50)
-        on left: 24
-        on right: 17
-    whileStmt <while_stmt> (51)
+    stmt <stmt> (48)
+        on left: 17 18 19 20 21 22 23 24
+        on right: 2 28 29 33 34
+    assignStmt <assign_stmt> (49)
         on left: 25
-        on right: 18
-    readStmt <read_stmt> (52)
+        on right: 17
+    callStmt <call_stmt> (50)
         on left: 26
+        on right: 18
+    beginStmt <begin_stmt> (51)
+        on left: 27
         on right: 19
-    writeStmt <write_stmt> (53)
-        on left: 27 29
-        on right: 20
-    skipStmt <skip_stmt> (54)
+    ifStmt <if_stmt> (52)
         on left: 28
+        on right: 20
+    whileStmt <while_stmt> (53)
+        on left: 29
         on right: 21
-    stmts <stmts> (55)
-        on left: 30 31
-        on right: 24 31
-    condition <condition> (56)
-        on left: 32 33
-        on right: 25
-    oddCondition <odd_condition> (57)
-        on left: 34
-        on right: 32
-    relOpCondition <rel_op_condition> (58)
-        on left: 35
-        on right: 33
-    relOp <token> (59)
-        on left: 36 37 38 39 40 41
-        on right: 35 43
-    expr <expr> (60)
-        on left: 42 43
-        on right: 22 27 29 34 35 49
-    term <expr> (61)
-        on left: 44 45 46
-        on right: 42 43 45 46
-    factor <expr> (62)
+    readStmt <read_stmt> (54)
+        on left: 30
+        on right: 22
+    writeStmt <write_stmt> (55)
+        on left: 31
+        on right: 23
+    skipStmt <skip_stmt> (56)
+        on left: 32
+        on right: 24
+    stmts <stmts> (57)
+        on left: 33 34
+        on right: 27 34
+    condition <condition> (58)
+        on left: 35 36
+        on right: 28 29
+    oddCondition <odd_condition> (59)
+        on left: 37
+        on right: 35
+    relOpCondition <rel_op_condition> (60)
+        on left: 38
+        on right: 36
+    relOp <token> (61)
+        on left: 39 40 41 42 43 44
+        on right: 38 46
+    expr <expr> (62)
+        on left: 45 46
+        on right: 25 31 37 38 52
+    term <expr> (63)
         on left: 47 48 49
-        on right: 44 45 46
-    empty <empty> (63)
-        on left: 50
+        on right: 45 46 48 49
+    factor <expr> (64)
+        on left: 50 51 52
+        on right: 47 48 49
+    empty <empty> (65)
+        on left: 53
         on right: 3 9 14
 
 
@@ -253,7 +244,7 @@ State 0
 
     0 $accept: • program $end
 
-    $default  reduce using rule 50 (empty)
+    $default  reduce using rule 53 (empty)
 
     program     go to state 1
     block       go to state 2
@@ -282,7 +273,7 @@ State 3
 
     "const"  shift, and go to state 6
 
-    $default  reduce using rule 50 (empty)
+    $default  reduce using rule 53 (empty)
 
     constDecl  go to state 7
     varDecls   go to state 8
@@ -327,7 +318,7 @@ State 8
 
     "var"  shift, and go to state 13
 
-    $default  reduce using rule 50 (empty)
+    $default  reduce using rule 53 (empty)
 
     varDecl    go to state 14
     procDecls  go to state 15
@@ -384,23 +375,28 @@ State 14
 State 15
 
     2 block: constDecls varDecls procDecls • stmt
+   15 procDecls: procDecls • procDecl
 
-    identsym  shift, and go to state 21
-    "call"    shift, and go to state 22
-    "begin"   shift, and go to state 23
-    "while"   shift, and go to state 24
-    "read"    shift, and go to state 25
-    "write"   shift, and go to state 26
-    "skip"    shift, and go to state 27
+    identsym     shift, and go to state 21
+    "procedure"  shift, and go to state 22
+    "call"       shift, and go to state 23
+    "begin"      shift, and go to state 24
+    "if"         shift, and go to state 25
+    "while"      shift, and go to state 26
+    "read"       shift, and go to state 27
+    "write"      shift, and go to state 28
+    "skip"       shift, and go to state 29
 
-    stmt        go to state 28
-    assignStmt  go to state 29
-    callStmt    go to state 30
-    beginStmt   go to state 31
-    whileStmt   go to state 32
-    readStmt    go to state 33
-    writeStmt   go to state 34
-    skipStmt    go to state 35
+    procDecl    go to state 30
+    stmt        go to state 31
+    assignStmt  go to state 32
+    callStmt    go to state 33
+    beginStmt   go to state 34
+    ifStmt      go to state 35
+    whileStmt   go to state 36
+    readStmt    go to state 37
+    writeStmt   go to state 38
+    skipStmt    go to state 39
 
 
 State 16
@@ -414,7 +410,7 @@ State 17
 
     5 constDef: "const" identsym • ":=" numbersym
 
-    ":="  shift, and go to state 36
+    ":="  shift, and go to state 40
 
 
 State 18
@@ -423,7 +419,7 @@ State 18
 
     "const"  shift, and go to state 10
 
-    constDef  go to state 37
+    constDef  go to state 41
 
 
 State 19
@@ -438,586 +434,713 @@ State 20
    11 varDecl: "var" idents •
    13 idents: idents • "," identsym
 
-    ","  shift, and go to state 38
+    ","  shift, and go to state 42
 
     $default  reduce using rule 11 (varDecl)
 
 
 State 21
 
-   22 assignStmt: identsym • "=" expr ";"
+   25 assignStmt: identsym • "=" expr ";"
 
-    "="  shift, and go to state 39
+    "="  shift, and go to state 43
 
 
 State 22
 
-   23 callStmt: "call" • identsym
+   16 procDecl: "procedure" • identsym ";" block ";"
 
-    identsym  shift, and go to state 40
+    identsym  shift, and go to state 44
 
 
 State 23
 
-   24 beginStmt: "begin" • stmts
+   26 callStmt: "call" • identsym
 
-    identsym  shift, and go to state 21
-    "call"    shift, and go to state 22
-    "begin"   shift, and go to state 23
-    "while"   shift, and go to state 24
-    "read"    shift, and go to state 25
-    "write"   shift, and go to state 26
-    "skip"    shift, and go to state 27
-
-    stmt        go to state 41
-    assignStmt  go to state 29
-    callStmt    go to state 30
-    beginStmt   go to state 31
-    whileStmt   go to state 32
-    readStmt    go to state 33
-    writeStmt   go to state 34
-    skipStmt    go to state 35
-    stmts       go to state 42
+    identsym  shift, and go to state 45
 
 
 State 24
 
-   25 whileStmt: "while" • condition "do" stmt
+   27 beginStmt: "begin" • stmts
 
-    identsym   shift, and go to state 43
-    numbersym  shift, and go to state 44
-    "odd"      shift, and go to state 45
-    "("        shift, and go to state 46
+    identsym  shift, and go to state 21
+    "call"    shift, and go to state 23
+    "begin"   shift, and go to state 24
+    "if"      shift, and go to state 25
+    "while"   shift, and go to state 26
+    "read"    shift, and go to state 27
+    "write"   shift, and go to state 28
+    "skip"    shift, and go to state 29
 
-    condition       go to state 47
-    oddCondition    go to state 48
-    relOpCondition  go to state 49
-    expr            go to state 50
-    term            go to state 51
-    factor          go to state 52
+    stmt        go to state 46
+    assignStmt  go to state 32
+    callStmt    go to state 33
+    beginStmt   go to state 34
+    ifStmt      go to state 35
+    whileStmt   go to state 36
+    readStmt    go to state 37
+    writeStmt   go to state 38
+    skipStmt    go to state 39
+    stmts       go to state 47
 
 
 State 25
 
-   26 readStmt: "read" • identsym ";"
+   28 ifStmt: "if" • condition "then" stmt "else" stmt
 
-    identsym  shift, and go to state 53
+    identsym   shift, and go to state 48
+    numbersym  shift, and go to state 49
+    "odd"      shift, and go to state 50
+    "("        shift, and go to state 51
+
+    condition       go to state 52
+    oddCondition    go to state 53
+    relOpCondition  go to state 54
+    expr            go to state 55
+    term            go to state 56
+    factor          go to state 57
 
 
 State 26
 
-   27 writeStmt: "write" • expr ";"
-   29          | "write" • expr ";"
+   29 whileStmt: "while" • condition "do" stmt
 
-    identsym   shift, and go to state 43
-    numbersym  shift, and go to state 44
-    "("        shift, and go to state 46
+    identsym   shift, and go to state 48
+    numbersym  shift, and go to state 49
+    "odd"      shift, and go to state 50
+    "("        shift, and go to state 51
 
-    expr    go to state 54
-    term    go to state 51
-    factor  go to state 52
+    condition       go to state 58
+    oddCondition    go to state 53
+    relOpCondition  go to state 54
+    expr            go to state 55
+    term            go to state 56
+    factor          go to state 57
 
 
 State 27
 
-   28 skipStmt: "skip" •
+   30 readStmt: "read" • identsym ";"
 
-    $default  reduce using rule 28 (skipStmt)
+    identsym  shift, and go to state 59
 
 
 State 28
+
+   31 writeStmt: "write" • expr ";"
+
+    identsym   shift, and go to state 48
+    numbersym  shift, and go to state 49
+    "("        shift, and go to state 51
+
+    expr    go to state 60
+    term    go to state 56
+    factor  go to state 57
+
+
+State 29
+
+   32 skipStmt: "skip" •
+
+    $default  reduce using rule 32 (skipStmt)
+
+
+State 30
+
+   15 procDecls: procDecls procDecl •
+
+    $default  reduce using rule 15 (procDecls)
+
+
+State 31
 
     2 block: constDecls varDecls procDecls stmt •
 
     $default  reduce using rule 2 (block)
 
 
-State 29
+State 32
 
-   15 stmt: assignStmt •
-
-    $default  reduce using rule 15 (stmt)
-
-
-State 30
-
-   16 stmt: callStmt •
-
-    $default  reduce using rule 16 (stmt)
-
-
-State 31
-
-   17 stmt: beginStmt •
+   17 stmt: assignStmt •
 
     $default  reduce using rule 17 (stmt)
 
 
-State 32
+State 33
 
-   18 stmt: whileStmt •
+   18 stmt: callStmt •
 
     $default  reduce using rule 18 (stmt)
 
 
-State 33
+State 34
 
-   19 stmt: readStmt •
+   19 stmt: beginStmt •
 
     $default  reduce using rule 19 (stmt)
 
 
-State 34
+State 35
 
-   20 stmt: writeStmt •
+   20 stmt: ifStmt •
 
     $default  reduce using rule 20 (stmt)
 
 
-State 35
+State 36
 
-   21 stmt: skipStmt •
+   21 stmt: whileStmt •
 
     $default  reduce using rule 21 (stmt)
 
 
-State 36
+State 37
+
+   22 stmt: readStmt •
+
+    $default  reduce using rule 22 (stmt)
+
+
+State 38
+
+   23 stmt: writeStmt •
+
+    $default  reduce using rule 23 (stmt)
+
+
+State 39
+
+   24 stmt: skipStmt •
+
+    $default  reduce using rule 24 (stmt)
+
+
+State 40
 
     5 constDef: "const" identsym ":=" • numbersym
 
-    numbersym  shift, and go to state 55
+    numbersym  shift, and go to state 61
 
 
-State 37
+State 41
 
     8 constDefs: constDefs "," constDef •
 
     $default  reduce using rule 8 (constDefs)
 
 
-State 38
+State 42
 
    13 idents: idents "," • identsym
 
-    identsym  shift, and go to state 56
-
-
-State 39
-
-   22 assignStmt: identsym "=" • expr ";"
-
-    identsym   shift, and go to state 43
-    numbersym  shift, and go to state 44
-    "("        shift, and go to state 46
-
-    expr    go to state 57
-    term    go to state 51
-    factor  go to state 52
-
-
-State 40
-
-   23 callStmt: "call" identsym •
-
-    $default  reduce using rule 23 (callStmt)
-
-
-State 41
-
-   30 stmts: stmt •
-
-    $default  reduce using rule 30 (stmts)
-
-
-State 42
-
-   24 beginStmt: "begin" stmts •
-   31 stmts: stmts • stmt
-
-    identsym  shift, and go to state 21
-    "call"    shift, and go to state 22
-    "begin"   shift, and go to state 23
-    "while"   shift, and go to state 24
-    "read"    shift, and go to state 25
-    "write"   shift, and go to state 26
-    "skip"    shift, and go to state 27
-
-    identsym  [reduce using rule 24 (beginStmt)]
-    "call"    [reduce using rule 24 (beginStmt)]
-    "begin"   [reduce using rule 24 (beginStmt)]
-    "while"   [reduce using rule 24 (beginStmt)]
-    "read"    [reduce using rule 24 (beginStmt)]
-    "write"   [reduce using rule 24 (beginStmt)]
-    "skip"    [reduce using rule 24 (beginStmt)]
-    $default  reduce using rule 24 (beginStmt)
-
-    stmt        go to state 58
-    assignStmt  go to state 29
-    callStmt    go to state 30
-    beginStmt   go to state 31
-    whileStmt   go to state 32
-    readStmt    go to state 33
-    writeStmt   go to state 34
-    skipStmt    go to state 35
+    identsym  shift, and go to state 62
 
 
 State 43
 
-   47 factor: identsym •
+   25 assignStmt: identsym "=" • expr ";"
 
-    $default  reduce using rule 47 (factor)
+    identsym   shift, and go to state 48
+    numbersym  shift, and go to state 49
+    "("        shift, and go to state 51
+
+    expr    go to state 63
+    term    go to state 56
+    factor  go to state 57
 
 
 State 44
 
-   48 factor: numbersym •
+   16 procDecl: "procedure" identsym • ";" block ";"
 
-    $default  reduce using rule 48 (factor)
+    ";"  shift, and go to state 64
 
 
 State 45
 
-   34 oddCondition: "odd" • expr
+   26 callStmt: "call" identsym •
 
-    identsym   shift, and go to state 43
-    numbersym  shift, and go to state 44
-    "("        shift, and go to state 46
-
-    expr    go to state 59
-    term    go to state 51
-    factor  go to state 52
+    $default  reduce using rule 26 (callStmt)
 
 
 State 46
 
-   49 factor: "(" • expr ")"
+   33 stmts: stmt •
 
-    identsym   shift, and go to state 43
-    numbersym  shift, and go to state 44
-    "("        shift, and go to state 46
-
-    expr    go to state 60
-    term    go to state 51
-    factor  go to state 52
+    $default  reduce using rule 33 (stmts)
 
 
 State 47
 
-   25 whileStmt: "while" condition • "do" stmt
+   27 beginStmt: "begin" stmts •
+   34 stmts: stmts • stmt
 
-    "do"  shift, and go to state 61
+    identsym  shift, and go to state 21
+    "call"    shift, and go to state 23
+    "begin"   shift, and go to state 24
+    "if"      shift, and go to state 25
+    "while"   shift, and go to state 26
+    "read"    shift, and go to state 27
+    "write"   shift, and go to state 28
+    "skip"    shift, and go to state 29
+
+    identsym  [reduce using rule 27 (beginStmt)]
+    "call"    [reduce using rule 27 (beginStmt)]
+    "begin"   [reduce using rule 27 (beginStmt)]
+    "if"      [reduce using rule 27 (beginStmt)]
+    "while"   [reduce using rule 27 (beginStmt)]
+    "read"    [reduce using rule 27 (beginStmt)]
+    "write"   [reduce using rule 27 (beginStmt)]
+    "skip"    [reduce using rule 27 (beginStmt)]
+    $default  reduce using rule 27 (beginStmt)
+
+    stmt        go to state 65
+    assignStmt  go to state 32
+    callStmt    go to state 33
+    beginStmt   go to state 34
+    ifStmt      go to state 35
+    whileStmt   go to state 36
+    readStmt    go to state 37
+    writeStmt   go to state 38
+    skipStmt    go to state 39
 
 
 State 48
 
-   32 condition: oddCondition •
+   50 factor: identsym •
 
-    $default  reduce using rule 32 (condition)
+    $default  reduce using rule 50 (factor)
 
 
 State 49
 
-   33 condition: relOpCondition •
+   51 factor: numbersym •
 
-    $default  reduce using rule 33 (condition)
+    $default  reduce using rule 51 (factor)
 
 
 State 50
 
-   35 relOpCondition: expr • relOp expr
+   37 oddCondition: "odd" • expr
 
-    "="   shift, and go to state 62
-    "<>"  shift, and go to state 63
-    "<"   shift, and go to state 64
-    "<="  shift, and go to state 65
-    ">"   shift, and go to state 66
-    ">="  shift, and go to state 67
+    identsym   shift, and go to state 48
+    numbersym  shift, and go to state 49
+    "("        shift, and go to state 51
 
-    relOp  go to state 68
+    expr    go to state 66
+    term    go to state 56
+    factor  go to state 57
 
 
 State 51
 
-   42 expr: term •
-   43     | term • relOp term
-   45 term: term • "*" factor
-   46     | term • "/" factor
+   52 factor: "(" • expr ")"
 
-    "*"   shift, and go to state 69
-    "/"   shift, and go to state 70
-    "="   shift, and go to state 62
-    "<>"  shift, and go to state 63
-    "<"   shift, and go to state 64
-    "<="  shift, and go to state 65
-    ">"   shift, and go to state 66
-    ">="  shift, and go to state 67
+    identsym   shift, and go to state 48
+    numbersym  shift, and go to state 49
+    "("        shift, and go to state 51
 
-    "="       [reduce using rule 42 (expr)]
-    "<>"      [reduce using rule 42 (expr)]
-    "<"       [reduce using rule 42 (expr)]
-    "<="      [reduce using rule 42 (expr)]
-    ">"       [reduce using rule 42 (expr)]
-    ">="      [reduce using rule 42 (expr)]
-    $default  reduce using rule 42 (expr)
-
-    relOp  go to state 71
+    expr    go to state 67
+    term    go to state 56
+    factor  go to state 57
 
 
 State 52
 
-   44 term: factor •
+   28 ifStmt: "if" condition • "then" stmt "else" stmt
 
-    $default  reduce using rule 44 (term)
+    "then"  shift, and go to state 68
 
 
 State 53
 
-   26 readStmt: "read" identsym • ";"
+   35 condition: oddCondition •
 
-    ";"  shift, and go to state 72
+    $default  reduce using rule 35 (condition)
 
 
 State 54
 
-   27 writeStmt: "write" expr • ";"
-   29          | "write" expr • ";"
+   36 condition: relOpCondition •
 
-    ";"  shift, and go to state 73
+    $default  reduce using rule 36 (condition)
 
 
 State 55
+
+   38 relOpCondition: expr • relOp expr
+
+    "="   shift, and go to state 69
+    "<>"  shift, and go to state 70
+    "<"   shift, and go to state 71
+    "<="  shift, and go to state 72
+    ">"   shift, and go to state 73
+    ">="  shift, and go to state 74
+
+    relOp  go to state 75
+
+
+State 56
+
+   45 expr: term •
+   46     | term • relOp term
+   48 term: term • "*" factor
+   49     | term • "/" factor
+
+    "*"   shift, and go to state 76
+    "/"   shift, and go to state 77
+    "="   shift, and go to state 69
+    "<>"  shift, and go to state 70
+    "<"   shift, and go to state 71
+    "<="  shift, and go to state 72
+    ">"   shift, and go to state 73
+    ">="  shift, and go to state 74
+
+    "="       [reduce using rule 45 (expr)]
+    "<>"      [reduce using rule 45 (expr)]
+    "<"       [reduce using rule 45 (expr)]
+    "<="      [reduce using rule 45 (expr)]
+    ">"       [reduce using rule 45 (expr)]
+    ">="      [reduce using rule 45 (expr)]
+    $default  reduce using rule 45 (expr)
+
+    relOp  go to state 78
+
+
+State 57
+
+   47 term: factor •
+
+    $default  reduce using rule 47 (term)
+
+
+State 58
+
+   29 whileStmt: "while" condition • "do" stmt
+
+    "do"  shift, and go to state 79
+
+
+State 59
+
+   30 readStmt: "read" identsym • ";"
+
+    ";"  shift, and go to state 80
+
+
+State 60
+
+   31 writeStmt: "write" expr • ";"
+
+    ";"  shift, and go to state 81
+
+
+State 61
 
     5 constDef: "const" identsym ":=" numbersym •
 
     $default  reduce using rule 5 (constDef)
 
 
-State 56
+State 62
 
    13 idents: idents "," identsym •
 
     $default  reduce using rule 13 (idents)
 
 
-State 57
-
-   22 assignStmt: identsym "=" expr • ";"
-
-    ";"  shift, and go to state 74
-
-
-State 58
-
-   31 stmts: stmts stmt •
-
-    $default  reduce using rule 31 (stmts)
-
-
-State 59
-
-   34 oddCondition: "odd" expr •
-
-    $default  reduce using rule 34 (oddCondition)
-
-
-State 60
-
-   49 factor: "(" expr • ")"
-
-    ")"  shift, and go to state 75
-
-
-State 61
-
-   25 whileStmt: "while" condition "do" • stmt
-
-    identsym  shift, and go to state 21
-    "call"    shift, and go to state 22
-    "begin"   shift, and go to state 23
-    "while"   shift, and go to state 24
-    "read"    shift, and go to state 25
-    "write"   shift, and go to state 26
-    "skip"    shift, and go to state 27
-
-    stmt        go to state 76
-    assignStmt  go to state 29
-    callStmt    go to state 30
-    beginStmt   go to state 31
-    whileStmt   go to state 32
-    readStmt    go to state 33
-    writeStmt   go to state 34
-    skipStmt    go to state 35
-
-
-State 62
-
-   36 relOp: "=" •
-
-    $default  reduce using rule 36 (relOp)
-
-
 State 63
 
-   37 relOp: "<>" •
+   25 assignStmt: identsym "=" expr • ";"
 
-    $default  reduce using rule 37 (relOp)
+    ";"  shift, and go to state 82
 
 
 State 64
 
-   38 relOp: "<" •
+   16 procDecl: "procedure" identsym ";" • block ";"
 
-    $default  reduce using rule 38 (relOp)
+    $default  reduce using rule 53 (empty)
+
+    block       go to state 83
+    constDecls  go to state 3
+    empty       go to state 4
 
 
 State 65
 
-   39 relOp: "<=" •
+   34 stmts: stmts stmt •
 
-    $default  reduce using rule 39 (relOp)
+    $default  reduce using rule 34 (stmts)
 
 
 State 66
 
-   40 relOp: ">" •
+   37 oddCondition: "odd" expr •
 
-    $default  reduce using rule 40 (relOp)
+    $default  reduce using rule 37 (oddCondition)
 
 
 State 67
 
-   41 relOp: ">=" •
+   52 factor: "(" expr • ")"
 
-    $default  reduce using rule 41 (relOp)
+    ")"  shift, and go to state 84
 
 
 State 68
 
-   35 relOpCondition: expr relOp • expr
+   28 ifStmt: "if" condition "then" • stmt "else" stmt
 
-    identsym   shift, and go to state 43
-    numbersym  shift, and go to state 44
-    "("        shift, and go to state 46
+    identsym  shift, and go to state 21
+    "call"    shift, and go to state 23
+    "begin"   shift, and go to state 24
+    "if"      shift, and go to state 25
+    "while"   shift, and go to state 26
+    "read"    shift, and go to state 27
+    "write"   shift, and go to state 28
+    "skip"    shift, and go to state 29
 
-    expr    go to state 77
-    term    go to state 51
-    factor  go to state 52
+    stmt        go to state 85
+    assignStmt  go to state 32
+    callStmt    go to state 33
+    beginStmt   go to state 34
+    ifStmt      go to state 35
+    whileStmt   go to state 36
+    readStmt    go to state 37
+    writeStmt   go to state 38
+    skipStmt    go to state 39
 
 
 State 69
 
-   45 term: term "*" • factor
+   39 relOp: "=" •
 
-    identsym   shift, and go to state 43
-    numbersym  shift, and go to state 44
-    "("        shift, and go to state 46
-
-    factor  go to state 78
+    $default  reduce using rule 39 (relOp)
 
 
 State 70
 
-   46 term: term "/" • factor
+   40 relOp: "<>" •
 
-    identsym   shift, and go to state 43
-    numbersym  shift, and go to state 44
-    "("        shift, and go to state 46
-
-    factor  go to state 79
+    $default  reduce using rule 40 (relOp)
 
 
 State 71
 
-   43 expr: term relOp • term
+   41 relOp: "<" •
 
-    identsym   shift, and go to state 43
-    numbersym  shift, and go to state 44
-    "("        shift, and go to state 46
-
-    term    go to state 80
-    factor  go to state 52
+    $default  reduce using rule 41 (relOp)
 
 
 State 72
 
-   26 readStmt: "read" identsym ";" •
+   42 relOp: "<=" •
 
-    $default  reduce using rule 26 (readStmt)
+    $default  reduce using rule 42 (relOp)
 
 
 State 73
 
-   27 writeStmt: "write" expr ";" •
-   29          | "write" expr ";" •
+   43 relOp: ">" •
 
-    $end      reduce using rule 27 (writeStmt)
-    $end      [reduce using rule 29 (writeStmt)]
-    identsym  reduce using rule 27 (writeStmt)
-    identsym  [reduce using rule 29 (writeStmt)]
-    "call"    reduce using rule 27 (writeStmt)
-    "call"    [reduce using rule 29 (writeStmt)]
-    "begin"   reduce using rule 27 (writeStmt)
-    "begin"   [reduce using rule 29 (writeStmt)]
-    "while"   reduce using rule 27 (writeStmt)
-    "while"   [reduce using rule 29 (writeStmt)]
-    "read"    reduce using rule 27 (writeStmt)
-    "read"    [reduce using rule 29 (writeStmt)]
-    "write"   reduce using rule 27 (writeStmt)
-    "write"   [reduce using rule 29 (writeStmt)]
-    "skip"    reduce using rule 27 (writeStmt)
-    "skip"    [reduce using rule 29 (writeStmt)]
-    $default  reduce using rule 27 (writeStmt)
+    $default  reduce using rule 43 (relOp)
 
 
 State 74
 
-   22 assignStmt: identsym "=" expr ";" •
+   44 relOp: ">=" •
 
-    $default  reduce using rule 22 (assignStmt)
+    $default  reduce using rule 44 (relOp)
 
 
 State 75
 
-   49 factor: "(" expr ")" •
+   38 relOpCondition: expr relOp • expr
 
-    $default  reduce using rule 49 (factor)
+    identsym   shift, and go to state 48
+    numbersym  shift, and go to state 49
+    "("        shift, and go to state 51
+
+    expr    go to state 86
+    term    go to state 56
+    factor  go to state 57
 
 
 State 76
 
-   25 whileStmt: "while" condition "do" stmt •
+   48 term: term "*" • factor
 
-    $default  reduce using rule 25 (whileStmt)
+    identsym   shift, and go to state 48
+    numbersym  shift, and go to state 49
+    "("        shift, and go to state 51
+
+    factor  go to state 87
 
 
 State 77
 
-   35 relOpCondition: expr relOp expr •
+   49 term: term "/" • factor
 
-    $default  reduce using rule 35 (relOpCondition)
+    identsym   shift, and go to state 48
+    numbersym  shift, and go to state 49
+    "("        shift, and go to state 51
+
+    factor  go to state 88
 
 
 State 78
 
-   45 term: term "*" factor •
+   46 expr: term relOp • term
 
-    $default  reduce using rule 45 (term)
+    identsym   shift, and go to state 48
+    numbersym  shift, and go to state 49
+    "("        shift, and go to state 51
+
+    term    go to state 89
+    factor  go to state 57
 
 
 State 79
 
-   46 term: term "/" factor •
+   29 whileStmt: "while" condition "do" • stmt
 
-    $default  reduce using rule 46 (term)
+    identsym  shift, and go to state 21
+    "call"    shift, and go to state 23
+    "begin"   shift, and go to state 24
+    "if"      shift, and go to state 25
+    "while"   shift, and go to state 26
+    "read"    shift, and go to state 27
+    "write"   shift, and go to state 28
+    "skip"    shift, and go to state 29
+
+    stmt        go to state 90
+    assignStmt  go to state 32
+    callStmt    go to state 33
+    beginStmt   go to state 34
+    ifStmt      go to state 35
+    whileStmt   go to state 36
+    readStmt    go to state 37
+    writeStmt   go to state 38
+    skipStmt    go to state 39
 
 
 State 80
 
-   43 expr: term relOp term •
-   45 term: term • "*" factor
-   46     | term • "/" factor
+   30 readStmt: "read" identsym ";" •
 
-    "*"  shift, and go to state 69
-    "/"  shift, and go to state 70
+    $default  reduce using rule 30 (readStmt)
 
-    $default  reduce using rule 43 (expr)
+
+State 81
+
+   31 writeStmt: "write" expr ";" •
+
+    $default  reduce using rule 31 (writeStmt)
+
+
+State 82
+
+   25 assignStmt: identsym "=" expr ";" •
+
+    $default  reduce using rule 25 (assignStmt)
+
+
+State 83
+
+   16 procDecl: "procedure" identsym ";" block • ";"
+
+    ";"  shift, and go to state 91
+
+
+State 84
+
+   52 factor: "(" expr ")" •
+
+    $default  reduce using rule 52 (factor)
+
+
+State 85
+
+   28 ifStmt: "if" condition "then" stmt • "else" stmt
+
+    "else"  shift, and go to state 92
+
+
+State 86
+
+   38 relOpCondition: expr relOp expr •
+
+    $default  reduce using rule 38 (relOpCondition)
+
+
+State 87
+
+   48 term: term "*" factor •
+
+    $default  reduce using rule 48 (term)
+
+
+State 88
+
+   49 term: term "/" factor •
+
+    $default  reduce using rule 49 (term)
+
+
+State 89
+
+   46 expr: term relOp term •
+   48 term: term • "*" factor
+   49     | term • "/" factor
+
+    "*"  shift, and go to state 76
+    "/"  shift, and go to state 77
+
+    $default  reduce using rule 46 (expr)
+
+
+State 90
+
+   29 whileStmt: "while" condition "do" stmt •
+
+    $default  reduce using rule 29 (whileStmt)
+
+
+State 91
+
+   16 procDecl: "procedure" identsym ";" block ";" •
+
+    $default  reduce using rule 16 (procDecl)
+
+
+State 92
+
+   28 ifStmt: "if" condition "then" stmt "else" • stmt
+
+    identsym  shift, and go to state 21
+    "call"    shift, and go to state 23
+    "begin"   shift, and go to state 24
+    "if"      shift, and go to state 25
+    "while"   shift, and go to state 26
+    "read"    shift, and go to state 27
+    "write"   shift, and go to state 28
+    "skip"    shift, and go to state 29
+
+    stmt        go to state 93
+    assignStmt  go to state 32
+    callStmt    go to state 33
+    beginStmt   go to state 34
+    ifStmt      go to state 35
+    whileStmt   go to state 36
+    readStmt    go to state 37
+    writeStmt   go to state 38
+    skipStmt    go to state 39
+
+
+State 93
+
+   28 ifStmt: "if" condition "then" stmt "else" stmt •
+
+    $default  reduce using rule 28 (ifStmt)

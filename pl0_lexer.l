@@ -1,4 +1,4 @@
-/* $Id: pl0_lexer_definitions_top.l,v 1.2 2023/10/06 11:12:37 leavens Exp leavens $ */
+/* $Id: pl0_lexer.l,v 1.9 2023/10/06 10:38:47 leavens Exp $ */
 /* Lexical Analyzer for PL/0 */
 
 %option header-file = "pl0_lexer.h"
@@ -68,33 +68,66 @@ static void number2ast(unsigned int val)
     yylval = t;
 }
 
-
 %}
 
-NUMBER          [0-9]*
-LETTER		    [_a-zA-Z]
-LETTERORDIGIT	({LETTER}|{NUMBER})
+ /* you can add actual definitions below */
 
-punctuation     . | ; | = | , | := | ( | )
-
-IDENT		    {LETTER}({LETTERORDIGIT}*)
+DIGIT	[0-9]
+NUMBER          {DIGIT}+
+LETTER		[_a-zA-Z]
+LETTERORDIGIT	({LETTER}|{DIGIT})
+IDENT		{LETTER}({LETTERORDIGIT}*)
 NEWLINE         \n
 CR              \r
 EOL             ({NEWLINE}|({CR}{NEWLINE}))
-IGNORED         [ \t\v\f\r]
-
-newline         \n
-
 COMMENTSTART    #
 COMMENT         {COMMENTSTART}.*
-
-rel-ops         <> | < | <= | > | >=
+IGNORED         [ \t\v\f\r]
 
 %%
 
 {IGNORED}       { ; } /* do nothing */
 {COMMENT}       { ; } /* ignore comments */
-{EOL}           { ; } /* ignore EOL outside of the above states */
+{EOL}           { ; } /* ignore EOL */
+
+{NUMBER}        { unsigned long lval;
+                  int ssf_ret;
+                  ssf_ret = sscanf(yytext, "%lu", &lval);
+                  if (ssf_ret != 1) {
+                      bail_with_error("Number (%s) couldn't be read by lexer!",
+				      yytext);
+                  }
+                  if (INT_MAX < lval ) {
+                      char msgbuf[512];
+                      if (strlen(yytext) >= 300) {
+                          sprintf(msgbuf, "Number (%300s ...) is too large!",
+				  yytext);
+                      } else {
+                          sprintf(msgbuf, "Number (%s) is too large!", yytext);
+                      }
+                      yyerror(lexer_filename(), msgbuf);
+                  }
+                  number2ast((int) lval);
+                  return numbersym; 
+                }
+
+\+              { tok2ast(plussym); return plussym; }
+-               { tok2ast(minussym); return minussym; }
+\*              { tok2ast(multsym); return multsym; }
+\/               { tok2ast(divsym); return divsym; }  
+
+\.              { return periodsym; }
+\;              { return semisym; }
+,               { return commasym; }
+:=              { return becomessym; }
+=               { tok2ast(eqsym); return eqsym; }
+\<>             { tok2ast(neqsym); return neqsym; }
+\<=             { tok2ast(leqsym); return leqsym; }
+\>=             { tok2ast(geqsym); return geqsym; }
+\>              { tok2ast(gtsym); return gtsym; }
+\<              { tok2ast(ltsym); return ltsym; }
+\(              { tok2ast(lparensym); return lparensym; }
+\)              { tok2ast(rparensym); return rparensym; }
 
 const           { tok2ast(constsym); return constsym; }
 var             { tok2ast(varsym); return varsym; }
@@ -110,84 +143,54 @@ do              { tok2ast(dosym); return dosym; }
 read            { tok2ast(readsym); return readsym; }
 write           { tok2ast(writesym); return writesym; }
 skip            { tok2ast(skipsym); return skipsym; }
-odd             { tok2ast(neqsym); return neqsym; }
-"<>"              { tok2ast(neqsym); return neqsym; }
-"<"               { tok2ast(ltsym); return ltsym; }
-"<="              { tok2ast(leqsym); return leqsym; }
-">"               { tok2ast(gtsym); return gtsym; }
-">="              { tok2ast(geqsym); return geqsym; }
-
-\+               { tok2ast(plussym); return plussym; }
--               { tok2ast(minussym); return minussym; }
-\*               { tok2ast(multsym); return multsym; }
-\/               { tok2ast(divsym); return divsym; }
-\.               { tok2ast(periodsym); return periodsym; }
-\;               { tok2ast(semisym); return semisym; }
-\,               { return commasym; }
-\=              { tok2ast(eqsym); return eqsym; }
-\:=              { tok2ast(becomessym); return becomessym; }
+odd             { tok2ast(oddsym); return oddsym; }
 
 {IDENT}         { ident2ast(yytext); return identsym; }
-
-{NUMBER} { unsigned long long int val;
-                int ssf_ret;
-                ssf_ret = sscanf(yytext, "%llu", &val);
-                if (val > INT_MAX || ssf_ret != 1) {
-                    bail_with_error("Value (%s) is too large!",
-                    yytext);
-                }
-                number2ast((unsigned int)val);
-                return numbersym; 
-         }
 
 .   { char msgbuf[512];
       sprintf(msgbuf, "invalid character: '%c' ('\\0%o')", *yytext, *yytext);
       yyerror(lexer_filename(), msgbuf);
     }
+%%
 
-%% 
-
- /* This code goes in the user code section of the pl0_lexer.l file,
-   following the last %% above. */
-
- // Requires: fname != NULL
- // Requires: fname is the name of a readable file
- // Initialize the lexer and start it reading
- // from the given file name
+// Requires: fname != NULL
+// Requires: fname is the name of a readable file
+// Initialize the lexer and start it reading
+// from the given file name
 void lexer_init(char *fname)
 {
     errors_noted = false;
     yyin = fopen(fname, "r");
     if (yyin == NULL) {
-	    bail_with_error("Cannot open %s", fname);
+	bail_with_error("Cannot open %s", fname);
     }
     filename = fname;
 }
 
- // Close the file yyin
- // and return 0 to indicate that there are no more files
+// Close the file yyin
+// and return 0 to indicate that there are no more files
 int yywrap() {
     if (yyin != NULL) {
-	    int rc = fclose(yyin);
-	    if (rc == EOF) {
-	        bail_with_error("Cannot close %s!", filename);
-	    }
+	int rc = fclose(yyin);
+	if (rc == EOF) {
+	    bail_with_error("Cannot close %s!", filename);
+	}
     }
     filename = NULL;
     return 1;  /* no more input */
 }
 
- // Return the name of the current input file
+// Return the name of the current input file
 const char *lexer_filename() {
     return filename;
 }
 
- // Return the line number of the next token
+// Return the line number of the next token
 unsigned int lexer_line() {
     return yylineno;
 }
 
- /* Report an error to the user on stderr */
+/* Report an error to the user on stderr */
 void yyerror(const char *filename, const char *msg)
 {
     fflush(stdout);
@@ -195,17 +198,17 @@ void yyerror(const char *filename, const char *msg)
     errors_noted = true;
 }
 
- // On standard output:
- // Print a message about the file name of the lexer's input
- // and then print a heading for the lexer's output.
+// On standard output:
+// Print a message about the file name of the lexer's input
+// and then print a heading for the lexer's output.
 void lexer_print_output_header()
 {
     printf("Tokens from file %s\n", lexer_filename());
     printf("%-6s %-4s  %s\n", "Number", "Line", "Text");
 }
 
- // Print information about the token t to stdout
- // followed by a newline
+// Print information about the token t to stdout
+// followed by a newline
 void lexer_print_token(enum yytokentype t, unsigned int tline,
 		       const char *txt)
 {
@@ -213,7 +216,7 @@ void lexer_print_token(enum yytokentype t, unsigned int tline,
 }
 
 
- /* Read all the tokens from the input file
+/* Read all the tokens from the input file
  * and print each token on standard output
  * using the format in lexer_print_token */
 void lexer_output()
@@ -222,9 +225,9 @@ void lexer_output()
     AST dummy;
     yytoken_kind_t t;
     do {
-        t = yylex(&dummy);
-        if (t == YYEOF) {
-            break;
+	t = yylex(&dummy);
+	if (t == YYEOF) {
+	    break;
         }
         lexer_print_token(t, yylineno, yytext);
     } while (t != YYEOF);

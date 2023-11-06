@@ -129,8 +129,9 @@ varDecls : empty { $$ = ast_var_decls_empty($1); } | varDecls varDecl { $$ = ast
 varDecl : varsym idents { $$ = ast_var_decl($2); } ;
 idents : identsym { $$ = ast_idents_singleton($1); } | idents commasym identsym {$$ = ast_idents($1, $3); };
 
-procDecls : empty { $$ = ast_proc_decls_empty($1); } | procDecls procDecl { $$ = ast_proc_decls($1, $2); } ;
-procDecl : procDecl identsym block { $$ = ast_proc_decl($1, $3);};
+procDecls : empty { $$ = ast_proc_decls_empty($1); } | procDecls procDecl 
+{ $$ = ast_proc_decls($1, $2); } ;
+procDecl : "procedure" identsym ";" block ";" { $$ = ast_proc_decl($2, $4);};
 
 stmt : assignStmt {$$ = ast_stmt_assign($1);}
 | callStmt {$$ = ast_stmt_call($1);}
@@ -143,15 +144,14 @@ stmt : assignStmt {$$ = ast_stmt_assign($1);}
 
 assignStmt: identsym "=" expr ";"{$$ = ast_assign_stmt($1,$3);};
 callStmt: "call" identsym{$$ = ast_call_stmt($2);};
-beginStmt: beginsym stmts{$$ = ast_begin_stmt($2);};
-ifStmt: ifStmt condition "then" "else"{$$ = ast_if_stmt($2,$3,$4);}; 
-whileStmt: "while" condition "do" stmt{$$= ast_while_stmt($2, $4);}
+beginStmt: "begin" stmts{$$ = ast_begin_stmt($2);};
+ifStmt: "if" condition "then" stmt "else" stmt{$$ = ast_if_stmt($2,$4,$6);}; 
+whileStmt: "while" condition "do" stmt{$$= ast_while_stmt($2, $4);} ;
 readStmt : "read" identsym ";" { $$ = ast_read_stmt($2); } ;
 writeStmt: "write" expr ";"{$$ = ast_write_stmt($2);};
 skipStmt: "skip"{file_location *floc
 	= file_location_make(lexer_filename(), lexer_line());
 	$$ = ast_skip_stmt(floc); } ;
-writeStmt : "write" expr ";" { $$ = ast_write_stmt($2); } 
 stmts : stmt { $$ = ast_stmts_singleton($1); } 
       | stmts stmt { $$ = ast_stmts($1,$2); };
 
@@ -177,13 +177,13 @@ factor : identsym { $$ = ast_expr_ident($1); }
      | "(" expr ")" { $$ = $2; }
      ;
 
-posSign: "+" ;
+posSign : "+"{$$ = ast_token(file_location_make(lexer_filename(), lexer_line()), "+", plussym)} 
+     | empty{};
 
-
-empty : %empty
-    { file_location *floc
+empty : %empty{ file_location *floc
 	= file_location_make(lexer_filename(), lexer_line());
 	$$ = ast_empty(floc); } ;
+    
 %%
 
 
