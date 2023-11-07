@@ -162,8 +162,7 @@ expr : term
      | expr "-" term{ $$ = ast_expr_binary_op(ast_binary_op_expr($1, $2, $3)); }
 
 term : factor
-     | term "*" factor
-       { $$ = ast_expr_binary_op(ast_binary_op_expr($1, $2, $3)); }
+     | term "*" factor { $$ = ast_expr_binary_op(ast_binary_op_expr($1, $2, $3)); }
      | term "/" factor
        { $$ = ast_expr_binary_op(ast_binary_op_expr($1, $2, $3)); }
      ;
@@ -182,9 +181,6 @@ empty : %empty{ file_location *floc
 	$$ = ast_empty(floc); } ;
     
 %%
-
-
-
 
 // Set the program's ast to be ast
 void setProgAST(block_t ast) { progast = ast; }

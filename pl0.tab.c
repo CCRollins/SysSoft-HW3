@@ -554,7 +554,7 @@ static const yytype_uint8 yyrline[] =
      135,   136,   137,   138,   139,   140,   142,   143,   144,   145,
      146,   147,   148,   149,   152,   153,   155,   155,   156,   157,
      158,   158,   158,   158,   158,   158,   160,   161,   162,   164,
-     165,   167,   171,   172,   173,   174,   177,   178,   180
+     165,   166,   170,   171,   172,   173,   176,   177,   179
 };
 #endif
 
@@ -2016,55 +2016,55 @@ yyreduce:
     break;
 
   case 50: /* term: term "*" factor  */
-#line 166 "pl0.y"
-       { (yyval.expr) = ast_expr_binary_op(ast_binary_op_expr((yyvsp[-2].expr), (yyvsp[-1].token), (yyvsp[0].expr))); }
+#line 165 "pl0.y"
+                       { (yyval.expr) = ast_expr_binary_op(ast_binary_op_expr((yyvsp[-2].expr), (yyvsp[-1].token), (yyvsp[0].expr))); }
 #line 2022 "pl0.tab.c"
     break;
 
   case 51: /* term: term "/" factor  */
-#line 168 "pl0.y"
+#line 167 "pl0.y"
        { (yyval.expr) = ast_expr_binary_op(ast_binary_op_expr((yyvsp[-2].expr), (yyvsp[-1].token), (yyvsp[0].expr))); }
 #line 2028 "pl0.tab.c"
     break;
 
   case 52: /* factor: identsym  */
-#line 171 "pl0.y"
+#line 170 "pl0.y"
                   { (yyval.expr) = ast_expr_ident((yyvsp[0].ident)); }
 #line 2034 "pl0.tab.c"
     break;
 
   case 53: /* factor: "-" numbersym  */
-#line 172 "pl0.y"
+#line 171 "pl0.y"
                      { (yyval.expr) = ast_expr_negated_number((yyvsp[-1].token), (yyvsp[0].number));}
 #line 2040 "pl0.tab.c"
     break;
 
   case 54: /* factor: posSign numbersym  */
-#line 173 "pl0.y"
+#line 172 "pl0.y"
                         { (yyval.expr) = ast_expr_pos_number((yyvsp[-1].token), (yyvsp[0].number));}
 #line 2046 "pl0.tab.c"
     break;
 
   case 55: /* factor: "(" expr ")"  */
-#line 174 "pl0.y"
+#line 173 "pl0.y"
                     { (yyval.expr) = (yyvsp[-1].expr); }
 #line 2052 "pl0.tab.c"
     break;
 
   case 56: /* posSign: "+"  */
-#line 177 "pl0.y"
+#line 176 "pl0.y"
              {(yyval.token) = ast_token(file_location_make(lexer_filename(), lexer_line()), "+", plussym);}
 #line 2058 "pl0.tab.c"
     break;
 
   case 57: /* posSign: empty  */
-#line 178 "pl0.y"
+#line 177 "pl0.y"
             {}
 #line 2064 "pl0.tab.c"
     break;
 
   case 58: /* empty: %empty  */
-#line 180 "pl0.y"
+#line 179 "pl0.y"
               { file_location *floc
 	= file_location_make(lexer_filename(), lexer_line());
 	(yyval.empty) = ast_empty(floc); }
@@ -2312,10 +2312,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 184 "pl0.y"
-
-
-
+#line 183 "pl0.y"
 
 
 // Set the program's ast to be ast

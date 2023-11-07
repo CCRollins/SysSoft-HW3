@@ -208,7 +208,7 @@ void scope_check_declare_ident(ident_t id, AST_type type)
     }
 }
 
-// Var Delcs
+// Var Decls
 void scope_check_varDecls(var_decls_t vds)
 {
     var_decl_t *vdp = vds.var_decls;
@@ -396,6 +396,8 @@ void scope_check_binary_op_expr(binary_op_expr_t exp)
     scope_check_expr(*(exp.expr2));
 }
 
+// check the identifier (id) to make sure that
+// all it has been declared (if not, then produce an error)
 void scope_check_ident_expr(ident_t id)
 {
     scope_check_ident_declared(*(id.file_loc), id.name);
