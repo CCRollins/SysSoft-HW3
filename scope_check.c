@@ -57,13 +57,153 @@ void scope_check_declare_ident(ident_t id, AST_type type)
 {
     if (symtab_declared_in_current_scope(id.name))
     {
-        bail_with_prog_error(*(id.file_loc),
-                             "%s \"%s\" has already been declared!", kind2str(type), id.name);
+        id_use *getOg = symtab_lookup(id.name);
+        id_kind newKind = NULL;
+        switch (type)
+        {
+        case 0:
+            break;
+        case 1:
+            newKind = constant_idk;
+            break;
+        case 2:
+            newKind = variable_idk;
+            break;
+        case 3:
+            newKind = procedure_idk;
+            break;
+        case 4:
+            newKind = constant_idk;
+            break;
+        case 5:
+            newKind = constant_idk;
+            break;
+        case 6:
+            newKind = constant_idk;
+            break;
+        case 7:
+            newKind = variable_idk;
+            break;
+        case 8:
+            break;
+        case 9:
+            newKind = procedure_idk;
+            break;
+        case 10:
+            break;
+        case 11:
+            break;
+        case 12:
+            break;
+        case 13:
+            break;
+        case 14:
+            break;
+        case 15:
+            break;
+        case 16:
+            break;
+        case 17:
+            break;
+        case 18:
+            break;
+        case 19:
+            break;
+        case 20:
+            break;
+        case 21:
+            break;
+        case 22:
+            break;
+        case 23:
+            break;
+        case 24:
+            break;
+        case 25:
+            break;
+        case 26:
+            break;
+        case 27:
+            break;
+        case 28:
+            break;
+        }
+        bail_with_prog_error(*(id.file_loc), "%s \"%s\" is already declared as a %s", kind2str(newKind), id.name, kind2str(getOg->attrs->kind));
     }
     else
     {
         int ofst_cnt = symtab_scope_loc_count();
         id_attrs *attrs = create_id_attrs(*(id.file_loc), type, ofst_cnt);
+        switch (attrs->kind)
+        {
+        case 0:
+            break;
+        case 1:
+            attrs->kind = constant_idk;
+            break;
+        case 2:
+            attrs->kind = variable_idk;
+            break;
+        case 3:
+            attrs->kind = procedure_idk;
+            break;
+        case 4:
+            attrs->kind = constant_idk;
+            break;
+        case 5:
+            attrs->kind = constant_idk;
+            break;
+        case 6:
+            attrs->kind = constant_idk;
+            break;
+        case 7:
+            attrs->kind = variable_idk;
+            break;
+        case 8:
+            break;
+        case 9:
+            attrs->kind = procedure_idk;
+            break;
+        case 10:
+            break;
+        case 11:
+            break;
+        case 12:
+            break;
+        case 13:
+            break;
+        case 14:
+            break;
+        case 15:
+            break;
+        case 16:
+            break;
+        case 17:
+            break;
+        case 18:
+            break;
+        case 19:
+            break;
+        case 20:
+            break;
+        case 21:
+            break;
+        case 22:
+            break;
+        case 23:
+            break;
+        case 24:
+            break;
+        case 25:
+            break;
+        case 26:
+            break;
+        case 27:
+            break;
+        case 28:
+            break;
+        }
+
         symtab_insert(id.name, attrs);
     }
 }
