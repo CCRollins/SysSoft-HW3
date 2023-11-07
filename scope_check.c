@@ -2,12 +2,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "scope_check.h"
 #include "id_attrs.h"
 #include "id_use.h"
 #include "file_location.h"
 #include "ast.h"
 #include "utilities.h"
+#include "scope.h"
 #include "symtab.h"
 #include "scope_check.h"
 
@@ -20,9 +20,9 @@ void scope_check_program(block_t prog)
 void scope_check_block(block_t blk)
 {
     symtab_enter_scope();
-    scope_check_constDecls(blk.const_decls);
+    scope_check_const_decls(blk.const_decls);
     scope_check_varDecls(blk.var_decls);
-    scope_check_procDecls(blk.proc_decls);
+    scope_check_proc_decls(blk.proc_decls);
     scope_check_stmt(blk.stmt);
     symtab_leave_scope();
 }
@@ -33,7 +33,7 @@ void scope_check_const_decls(const_decls_t cds)
     const_decl_t *dcl = cds.const_decls;
     while (dcl != NULL)
     {
-        scope_check_constDefs(dcl->const_defs);
+        scope_check_const_defs(dcl->const_defs);
         dcl = dcl->next;
     }
 }
@@ -55,7 +55,7 @@ void scope_check_constDef(const_def_t def)
 
 void scope_check_declare_ident(ident_t id, AST_type type)
 {
-    if (symtab_defined_in_current_scope(id.name))
+    if (symtab_declared_in_current_scope(id.name))
     {
         bail_with_prog_error(*(id.file_loc),
                              "%s \"%s\" has already been declared!", kind2str(type), id.name);
@@ -63,7 +63,7 @@ void scope_check_declare_ident(ident_t id, AST_type type)
     else
     {
         int ofst_cnt = symtab_scope_loc_count();
-        id_attrs *attrs = id_attrs_loc_create(*(id.file_loc), type, ofst_cnt);
+        id_attrs *attrs = create_id_attrs(*(id.file_loc), type, ofst_cnt);
         symtab_insert(id.name, attrs);
     }
 }
@@ -158,7 +158,9 @@ void scope_check_assignStmt(assign_stmt_t stmt)
 }
 
 // call statement
-void scope_check_callStmt(call_stmt_t call);
+void scope_check_callStmt(call_stmt_t call)
+{
+}
 
 // begin statement
 void scope_check_beginStmt(begin_stmt_t stmt)
@@ -269,9 +271,4 @@ id_use *scope_check_ident_declared(file_location floc, const char *name)
                              name);
     }
     return ret;
-}
-
-int main()
-{
-    return 0;
 }

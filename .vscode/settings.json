@@ -33,6 +33,7 @@
     "scope_check.h": "c",
     "utilities.h": "c",
     "id_attrs.h": "c",
-    "symtab.h": "c"
+    "symtab.h": "c",
+    "ast.h": "c"
   }
 }
