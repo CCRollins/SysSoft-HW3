@@ -31,6 +31,7 @@
   "files.associations": {
     "file_location.h": "c",
     "scope_check.h": "c",
-    "utilities.h": "c"
+    "utilities.h": "c",
+    "id_attrs.h": "c"
   }
 }
