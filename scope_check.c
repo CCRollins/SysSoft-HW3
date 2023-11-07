@@ -58,7 +58,7 @@ void scope_check_declare_ident(ident_t id, AST_type type)
     if (symtab_declared_in_current_scope(id.name))
     {
         id_use *getOg = symtab_lookup(id.name);
-        id_kind newKind = NULL;
+        id_kind newKind = 0;
         switch (type)
         {
         case 0:
@@ -133,8 +133,8 @@ void scope_check_declare_ident(ident_t id, AST_type type)
     else
     {
         int ofst_cnt = symtab_scope_loc_count();
-        id_attrs *attrs = create_id_attrs(*(id.file_loc), type, ofst_cnt);
-        switch (attrs->kind)
+        id_attrs *attrs = create_id_attrs(*(id.file_loc), (id_kind)type, ofst_cnt);
+        switch (type)
         {
         case 0:
             break;
@@ -248,7 +248,7 @@ void scope_check_proc_decls(proc_decls_t pro)
 void scope_check_procDecl(proc_decl_t dcl)
 {
     // scope_check_declare_ident_def(def.ident, def.type_tag);
-    scope_check_declare_ident(ast_ident(dcl.file_loc, dcl.name), procedure_idk);
+    scope_check_declare_ident(ast_ident(dcl.file_loc, dcl.name), dcl.type_tag);
 
     scope_check_block(*dcl.block);
 }
