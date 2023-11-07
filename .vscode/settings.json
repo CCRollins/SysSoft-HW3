@@ -32,6 +32,7 @@
     "file_location.h": "c",
     "scope_check.h": "c",
     "utilities.h": "c",
-    "id_attrs.h": "c"
+    "id_attrs.h": "c",
+    "symtab.h": "c"
   }
 }
