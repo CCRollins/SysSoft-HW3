@@ -1,4 +1,4 @@
-/* $Id: scope.c,v 1.4 2023/11/01 13:25:58 leavens Exp $ */
+/* $Id: scope.c,v 1.5 2023/11/03 12:29:45 leavens Exp leavens $ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -11,15 +11,16 @@
 // and exits with a failure error code in that case.
 scope_t *scope_create()
 {
-    scope_t *new_s
-	= (scope_t *) malloc(sizeof(scope_t));
-    if (new_s == NULL) {
-	bail_with_error("No space for new scope_t!");
+    scope_t *new_s = (scope_t *)malloc(sizeof(scope_t));
+    if (new_s == NULL)
+    {
+        bail_with_error("No space for new scope_t!");
     }
     new_s->size = 0;
     new_s->loc_count = 0;
-    for (int j = 0; j < MAX_SCOPE_SIZE; j++) {
-	new_s->entries[j] = NULL;
+    for (int j = 0; j < MAX_SCOPE_SIZE; j++)
+    {
+        new_s->entries[j] = NULL;
     }
     return new_s;
 }
@@ -43,37 +44,38 @@ bool scope_full(scope_t *s)
     return scope_size(s) >= MAX_SCOPE_SIZE;
 }
 
-// Requires: assoc != NULL && !scope_full() && !scope_defined(assoc->id);
+// Requires: assoc != NULL && !scope_full() && !scope_declared(assoc->id);
 // Add an association from the given name to the given id attributes
 // in the current scope.
-// If assoc->attrs->kind != procedure_idk, 
+// If assoc->attrs->kind != procedure_idk,
 // then this stores the scope_count value into assoc->attrs->offset_count
 // and then increases loc_count by 1.
 static void scope_add(scope_t *s, scope_assoc_t *assoc)
 {
     // assert(assoc != NULL);
     // assert(!scope_full());
-    // assert(!scope_defined(assoc->id));
+    // assert(!scope_declared(assoc->id));
     assoc->attrs->offset_count = (s->loc_count)++;
     s->entries[(s->size)++] = assoc;
     // fprintf(stderr, "assoc->attrs->offset_count is %d\n",
     //         assoc->attrs->offset_count);
 }
 
-// Requires: !scope_defined(name) && attrs != NULL;
+// Requires: !scope_declared(name) && attrs != NULL;
 // Modify the current scope symbol table to
 // add an association from the given name to the given id_attrs attrs,
-// and if attrs->kind != procedure, 
+// and if attrs->kind != procedure,
 // then this stores the loc_count value into attrs->offset_count
 // and then increases the loc_count for this scope by 1.
 void scope_insert(scope_t *s, const char *name, id_attrs *attrs)
 {
-    // assert(!scope_defined(name));
+    // assert(!scope_declared(name));
     // assert(attrs != NULL);
     // debug_print("Running scope_insert for name "%s\"\n", name);
     scope_assoc_t *new_assoc = malloc(sizeof(scope_assoc_t));
-    if (new_assoc == NULL) {
-	bail_with_error("No space for association!");
+    if (new_assoc == NULL)
+    {
+        bail_with_error("No space for association!");
     }
     new_assoc->id = name;
     new_assoc->attrs = attrs;
@@ -82,11 +84,11 @@ void scope_insert(scope_t *s, const char *name, id_attrs *attrs)
 
 // Requires: name != NULL;
 // Is the given name associated with some attributes in the current scope?
-bool scope_defined(scope_t *s, const char *name)
+bool scope_declared(scope_t *s, const char *name)
 {
     // assert(s != NULL);
     // assert(name != NULL);
-    // debug_print("entering scope_defined for \"%s\"\n", name);
+    // debug_print("entering scope_declared for \"%s\"\n", name);
     return scope_lookup(s, name) != NULL;
 }
 
@@ -99,19 +101,21 @@ id_attrs *scope_lookup(scope_t *s, const char *name)
     // assert(name != NULL);
     // assert(s != NULL);
     // debug_print("Entering scope_lookup for \"%s\"\n", name);
-    for (i = 0; i < s->size; i++) {
-	// assert(s != NULL);
-	// assert(s->entries != NULL);
-	// assert(0 <= i && i < s->size);
-	// assert(s->entries[i] != NULL);
-	// assert(s->entries[i]->id != NULL);
-	// debug_print("Past asserts in scope_lookup loop\n");
-	// debug_print("Length of name is %d\n", strlen(name));
-	if (strcmp(s->entries[i]->id, name) == 0) {
-	    // debug_print("scope_lookup(\"%s\") returning attributes\n",
-	    //		name);
-	    return s->entries[i]->attrs;
-	}
+    for (i = 0; i < s->size; i++)
+    {
+        // assert(s != NULL);
+        // assert(s->entries != NULL);
+        // assert(0 <= i && i < s->size);
+        // assert(s->entries[i] != NULL);
+        // assert(s->entries[i]->id != NULL);
+        // debug_print("Past asserts in scope_lookup loop\n");
+        // debug_print("Length of name is %d\n", strlen(name));
+        if (strcmp(s->entries[i]->id, name) == 0)
+        {
+            // debug_print("scope_lookup(\"%s\") returning attributes\n",
+            //		name);
+            return s->entries[i]->attrs;
+        }
     }
     // assert(i == s->size);
     // debug_print("The scope_lookup call on \"%s\" returns NULL\n", name);
