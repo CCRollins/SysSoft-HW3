@@ -1,12 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "parser.h"
 #include "lexer.h"
-#include "ast.h"
-#include "symtab.h"
-#include "scope_check.h"
 #include "utilities.h"
-#include "unparser.h"
 
 /* Print a usage message on stderr 
    and exit with failure. */
@@ -26,18 +21,11 @@ int main(int argc, char *argv[])
     if (argc != 1 || argv[1][0] == '-') {
 	    usage(cmdname);
     }
-
     lexer_init(argv[1]);
-    // parsing
-    block_t progast = parseProgram(argv[1]);
-
-    // unparse to check on the AST
-    unparseProgram(stdout, progast);
-
-    // building symbol table
-    symtab_initialize();
-    // check for duplicate declarations
-    scope_check_program(progast);
-
-    return EXIT_SUCCESS;
+    lexer_output();
+    if (errors_noted) {
+	return EXIT_FAILURE;
+    } else {
+	return EXIT_SUCCESS;
+    }
 }

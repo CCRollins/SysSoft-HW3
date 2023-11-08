@@ -1,4 +1,4 @@
-/* $Id: lexer.h,v 1.2 2023/10/13 12:15:32 leavens Exp $ */
+/* $Id: lexer.h,v 1.6 2023/10/19 06:20:37 leavens Exp leavens $ */
 #ifndef _LEXER_H
 #define _LEXER_H
 #include <stdbool.h>
@@ -29,7 +29,7 @@ extern void lexer_print_output_header();
 // Print information about the token t to stdout
 // followed by a newline
 extern void lexer_print_token(int t, unsigned int tline,
-							  const char *txt);
+			      const char *txt);
 
 /* Read all the tokens from the input file
  * and print each token on standard output

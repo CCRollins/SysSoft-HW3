@@ -155,7 +155,7 @@ stmts : stmt { $$ = ast_stmts_singleton($1); }
 condition: oddCondition{$$ = ast_condition_odd($1);} | relOpCondition{$$ = ast_condition_rel($1);};
 oddCondition: "odd" expr{$$ = ast_odd_condition($2);};
 relOpCondition: expr relOp expr{$$ = ast_rel_op_condition($1, $2, $3);}
-relOp : "=" | "<>" | "<" | "<=" | ">" | ">=" ;
+relOp : "=" | "<>" | "<" | "<=" | ">" | ">=" 
 
 expr : term
      | expr "+" term {$$ = ast_expr_binary_op(ast_binary_op_expr($1, $2, $3)); }
